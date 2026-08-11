@@ -6,6 +6,7 @@ Last updated: 2026-08-11
 
 ## Sources scanned
 
+- .agents\skills
 - C:\Users\maxiv\.agents\skills
 - C:\Users\maxiv\.config\opencode\skills
 - C:\Users\maxiv\.gemini\skills
@@ -32,6 +33,8 @@ Last updated: 2026-08-11
 | `judgment-day` | Trigger: judgment day, dual review, adversarial review, juzgar. Run blind dual review, fix confirmed issues, then re-judge. | user | `C:\Users\maxiv\.config\opencode\skills\judgment-day\SKILL.md` |
 | `skill-creator` | Trigger: new skills, agent instructions, documenting AI usage patterns. Create LLM-first skills with valid frontmatter. | user | `C:\Users\maxiv\.config\opencode\skills\skill-creator\SKILL.md` |
 | `skill-improver` | Trigger: improve skills, audit skills, refactor skills, skill quality. Audit and upgrade existing LLM-first skills. | user | `C:\Users\maxiv\.config\opencode\skills\skill-improver\SKILL.md` |
+| `spec` | Designs and develops specs following the spec-driven method. Asks clarifying questions before proposing structure, and builds the spec section by section. Use it when starting a large feature, before writing code. | project | `D:\Workspace\opencode\06-open-daycare\.agents\skills\spec\SKILL.md` |
+| `spec-impl` | Implements an approved spec. Validates that the state means "Approved" (in any language), creates a git branch named after the spec, switches to it, and starts the implementation step by step with pauses to review diffs. | project | `D:\Workspace\opencode\06-open-daycare\.agents\skills\spec-impl\SKILL.md` |
 | `work-unit-commits` | Plan commits as reviewable work units. Trigger: implementation, commit splitting, chained PRs, or keeping tests and docs with code. | user | `C:\Users\maxiv\.config\opencode\skills\work-unit-commits\SKILL.md` |
 
 ## Loading protocol
