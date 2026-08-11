@@ -48,3 +48,8 @@ Next.js 16.3.0 App Router app (React 19.2.8, TypeScript strict, Tailwind v4). Cu
 
 - /spec: Usaremos esta habilidad para crear las especificaciones.
 - /spec-impl: Usaremos esta skill para hacer las implementaciones.
+
+## Reglas de código
+
+- Usar Clean Architecture
+- Usar nombres de variables, funciones, etc en ingles.

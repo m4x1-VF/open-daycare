@@ -6,7 +6,26 @@
       "command": [
         "npx",
         "@playwright/mcp@latest"
-      ]
+      ],
+      "enabled": true
+    },
+    "context7": {
+      "enabled": true
+    },
+    "baserow": {
+      "enabled": false
+    },
+    "engram": {
+      "enabled": false
+    },
+    "github": {
+      "enabled": false
+    },
+    "open-design": {
+      "enabled": false
+    },
+    "supabase": {
+      "enabled": false
     }
   }
 }
