@@ -40,7 +40,7 @@ export default function TopBar() {
         >
           <path d="M12 5v14M5 12h14" />
         </svg>
-        Nueva
+        Nueva publicación
       </a>
 
       <div className="w-9 h-9 rounded-full bg-coral text-white font-fredoka font-semibold text-sm flex items-center justify-center flex-none">
