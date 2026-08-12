@@ -1,6 +1,6 @@
 # SPEC 01 — Home: feed de la guardería
 
-> **Estado:** Borrador
+> **Estado:** Aprobado
 > **Depende de:** —
 > **Fecha:** 2026-08-11
 > **Objetivo:** Construir la pantalla de Home como feed de publicaciones de la guardería, replicando el diseño de `reference/pantallas/feed.dc.html` (solo UI, sin lógica de negocio).
