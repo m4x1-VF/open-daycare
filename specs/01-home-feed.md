@@ -1,6 +1,6 @@
 # SPEC 01 — Home: feed de la guardería
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** —
 > **Fecha:** 2026-08-11
 > **Objetivo:** Construir la pantalla de Home como feed de publicaciones de la guardería, replicando el diseño de `reference/pantallas/feed.dc.html` (solo UI, sin lógica de negocio).
@@ -74,21 +74,21 @@ El mock exporta exactamente 3 items replicando el contenido de `feed.dc.html` (l
 
 ## Acceptance criteria
 
-- [ ] `app/page.tsx` reemplaza el starter y renderiza el feed en `/`.
-- [ ] El sidebar muestra "OpenDaycare · Sala Soles", el botón naranja "Nueva publicación" y los 4 items de navegación, con Feed marcado como activo.
-- [ ] El sidebar termina con la tarjeta "Caro Giménez · Maestra · Soles" y el botón de logout.
-- [ ] El encabezado del main dice "Buenas, Caro" con subtítulo "12 niños · martes 17 jun".
-- [ ] El composer "Compartí un momento…" aparece entre el encabezado y la lista de posts.
-- [ ] Se renderizan exactamente 3 PostCards replicando los textos de `feed.dc.html` (logro del orinal, actividad de témperas con placeholder de foto, anuncio del parque).
-- [ ] Cada PostCard muestra el chip de tipo con label en español (`LOGRO`, `ACTIVIDAD`, `ANUNCIO`) y color correcto (verde / celeste / lila según `type` sea `achievement` / `activity` / `announcement`), y el número visible de hearts y comentarios del mock.
-- [ ] En viewport `<768px` el sidebar desaparece y aparece la TopBar con el botón "Nueva publicación" y el avatar.
-- [ ] La tipografía usa Fredoka para títulos/avatares y Nunito para texto de cuerpo, cargadas vía `next/font/google` (sin `<link>` a Google Fonts).
-- [ ] Los colores siguen la paleta cálida de `feed.dc.html` definida como tokens en `app/globals.css` (no colores del starter).
-- [ ] Todos los links a pantallas no implementadas usan `href="#"` (ninguna ruta nueva en `app/`).
-- [ ] `PostCard`, `Sidebar`, `Composer` y `TopBar` no importan `mock-posts.ts` ni acceden a estado externo; reciben toda su data por props o la definen como literales internos.
-- [ ] `npm run lint` finaliza sin errores.
-- [ ] `npx tsc --noEmit` finaliza sin errores.
-- [ ] `npm run dev` no registra errores en consola al cargar `/`.
+- [x] `app/page.tsx` reemplaza el starter y renderiza el feed en `/`.
+- [x] El sidebar muestra "OpenDaycare · Sala Soles", el botón naranja "Nueva publicación" y los 4 items de navegación, con Feed marcado como activo.
+- [x] El sidebar termina con la tarjeta "Caro Giménez · Maestra · Soles" y el botón de logout.
+- [x] El encabezado del main dice "Buenas, Caro" con subtítulo "12 niños · martes 17 jun".
+- [x] El composer "Compartí un momento…" aparece entre el encabezado y la lista de posts.
+- [x] Se renderizan exactamente 3 PostCards replicando los textos de `feed.dc.html` (logro del orinal, actividad de témperas con placeholder de foto, anuncio del parque).
+- [x] Cada PostCard muestra el chip de tipo con label en español (`LOGRO`, `ACTIVIDAD`, `ANUNCIO`) y color correcto (verde / celeste / lila según `type` sea `achievement` / `activity` / `announcement`), y el número visible de hearts y comentarios del mock.
+- [x] En viewport `<768px` el sidebar desaparece y aparece la TopBar con el botón "Nueva publicación" y el avatar.
+- [x] La tipografía usa Fredoka para títulos/avatares y Nunito para texto de cuerpo, cargadas vía `next/font/google` (sin `<link>` a Google Fonts).
+- [x] Los colores siguen la paleta cálida de `feed.dc.html` definida como tokens en `app/globals.css` (no colores del starter).
+- [x] Todos los links a pantallas no implementadas usan `href="#"` (ninguna ruta nueva en `app/`).
+- [x] `PostCard`, `Sidebar`, `Composer` y `TopBar` no importan `mock-posts.ts` ni acceden a estado externo; reciben toda su data por props o la definen como literales internos.
+- [x] `npm run lint` finaliza sin errores.
+- [x] `npx tsc --noEmit` finaliza sin errores.
+- [x] `npm run dev` no registra errores en consola al cargar `/`.
 
 ## Decisions
 

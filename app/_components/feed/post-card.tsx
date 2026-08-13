@@ -1,5 +1,5 @@
-import type { FeedPost, PostType } from "@/app/_lib/mock-posts";
-import { POST_TYPE_LABELS } from "@/app/_lib/mock-posts";
+import type { FeedPost, PostType } from "@/app/_lib/post-types";
+import { POST_TYPE_LABELS } from "@/app/_lib/post-types";
 
 const TAG_STYLES: Record<PostType, string> = {
   achievement: "bg-tag-achievement-bg text-tag-achievement",

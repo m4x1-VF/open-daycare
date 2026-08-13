@@ -48,6 +48,7 @@ Next.js 16.3.0 App Router app (React 19.2.8, TypeScript strict, Tailwind v4). Cu
 
 - /spec: Usaremos esta habilidad para crear las especificaciones.
 - /spec-impl: Usaremos esta skill para hacer las implementaciones.
+- `spec-verifier` (subagent): Verifica los acceptance criteria de un spec. Se invoca con la herramienta Task (`subagent_type: spec-verifier`). Lee el spec, extrae cada `- [ ]` de la sección "Acceptance criteria", los clasifica (código / lint-typecheck / UI / convenciones de Next.js) y los verifica con `read`/`grep`, `Context7` y `Playwright`. Marca `- [x]` los que pasan y reporta los que fallan con recomendaciones. No modifica código fuente, solo los checkboxes del spec. Definido en `.opencode/agents/spec-verifier.md`.
 
 ## Reglas de código
 
