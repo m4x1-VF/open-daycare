@@ -1,4 +1,4 @@
-import { LinkedParent } from "@/_lib/child-types";
+import { LinkedParent } from "@/app/_lib/child-types";
 import { Avatar } from "@/app/_components/ui/avatar";
 
 interface ParentsCardProps {

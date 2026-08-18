@@ -1,4 +1,4 @@
-import { Child } from "@/_lib/child-types";
+import { Child } from "@/app/_lib/child-types";
 import { Avatar } from "@/app/_components/ui/avatar";
 
 interface KidCardProps {

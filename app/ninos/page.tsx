@@ -1,7 +1,7 @@
 import Sidebar from "@/app/_components/feed/sidebar";
 import TopBar from "@/app/_components/feed/top-bar";
 import KidCard from "@/app/_components/ninos/kid-card";
-import { mockChildren } from "@/_lib/mock-children";
+import { mockChildren } from "@/app/_lib/mock-children";
 
 export default function NinosPage() {
   return (

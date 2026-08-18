@@ -1,4 +1,4 @@
-import { NavItem } from "@/_lib/child-types";
+import { NavItem } from "@/app/_lib/child-types";
 
 interface SidebarProps {
   activeItem?: NavItem;

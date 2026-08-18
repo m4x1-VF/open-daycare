@@ -1,10 +1,11 @@
+import Link from "next/link";
 import Sidebar from "@/app/_components/feed/sidebar";
 import TopBar from "@/app/_components/feed/top-bar";
 import ChildProfileHeader from "@/app/_components/ninos/child-profile-header";
 import AllergiesCard from "@/app/_components/ninos/allergies-card";
 import ChildDetails from "@/app/_components/ninos/child-details";
 import ParentsCard from "@/app/_components/ninos/parents-card";
-import { getChildById } from "@/_lib/mock-children";
+import { getChildById } from "@/app/_lib/mock-children";
 
 interface NinosIdPageProps {
   params: { id: string };
@@ -40,7 +41,7 @@ export default function NinosIdPage({ params }: NinosIdPageProps) {
 
         <main className="flex-1 min-w-0 h-screen overflow-y-auto">
           <div className="max-w-[820px] w-full mx-auto px-10 py-[34px] pb-20 max-md:px-4">
-            <a
+            <Link
               href="/ninos"
               className="flex items-center gap-[7px] text-text-muted font-bold text-[14px] mb-5"
             >
@@ -57,7 +58,7 @@ export default function NinosIdPage({ params }: NinosIdPageProps) {
                 <path d="m15 18-6-6 6-6" />
               </svg>
               Volver a Niños
-            </a>
+            </Link>
 
             <div className="flex gap-[26px] items-start flex-wrap">
               <div className="flex-1 min-w-[300px] flex flex-col gap-[18px]">
