@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Child } from "@/app/_lib/child-types";
 import { Avatar } from "@/app/_components/ui/avatar";
 
@@ -44,8 +45,8 @@ export default function KidCard({ child }: KidCardProps) {
   }
 
   return (
-    <a
-      href="#"
+    <Link
+      href={`/ninos/${child.id}`}
       className="flex items-center gap-[14px] min-w-0 bg-card border border-border rounded-[18px] p-4 shadow-[0_4px_14px_-12px_rgba(120,90,60,0.5)] hover:border-[#F2A78E] hover:-translate-y-0.5 transition-all"
     >
       <Avatar
@@ -63,6 +64,6 @@ export default function KidCard({ child }: KidCardProps) {
         </div>
       </div>
       {rightSlot}
-    </a>
+    </Link>
   );
 }

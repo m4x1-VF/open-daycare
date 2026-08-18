@@ -90,26 +90,26 @@ El mock exporta 8 niños replicando `ninos.dc.html` (Mateo, Sofía, Benjamín, V
 
 ## Acceptance criteria
 
-- [ ] `app/ninos/page.tsx` renderiza la lista de niños en `/ninos`.
-- [ ] `app/ninos/[id]/page.tsx` renderiza el perfil del niño en `/ninos/<id>` usando `params.id` para resolver el mock.
-- [ ] El sidebar marca "Niños" como activo en `/ninos` y `/ninos/[id]`, y sigue marcando "Feed" activo en `/` (regresión nula).
-- [ ] La página Lista muestra el header "GESTIÓN" + "Niños" + botón "Agregar niño".
-- [ ] La página Lista muestra el input "Buscar niño…" (solo visual, sin handler).
-- [ ] La página Lista muestra la sección "SALA SOLES · 8 niños" y un grid 2 columnas con exactamente 8 KidCards replicando nombres/edades del mockup.
-- [ ] Cada KidCard muestra avatar (color + inicial), nombre (Fredoka), "edad años · N padres vinculados" o "sin padres vinculados", y slot derecho correcto: badge alérgeno (MANÍ/LACTOSA) si `allergens.length > 0`, badge VINCULAR si no tiene alérgenos y `linkedParents.length === 0`, chevron en caso contrario.
-- [ ] La página Perfil muestra el link "Volver a Niños" apuntando a `/ninos`.
-- [ ] La página Perfil muestra `ChildProfileHeader` con avatar 84px, nombre (Fredoka 28px), "edad · Sala X" y botón "Editar".
-- [ ] La página Perfil muestra `AllergiesCard` (rosa, ícono warning, "Alergias y notas" + notas) solo si el niño tiene `allergyNotes`.
-- [ ] La página Perfil muestra `ChildDetails` con filas "Fecha de nacimiento" / "Sala" / "Ingreso" y los valores del mock.
-- [ ] La página Perfil muestra el botón "Resumen del día" (fondo `--color-text`) y debajo `ParentsCard`.
-- [ ] `ParentsCard` lista cada padre con avatar + nombre + "roleLabel · statusLabel lower" + badge estado (ACTIVA verde / PENDIENTE amarillo) y el link "Vincular otro padre" al final.
-- [ ] Todos los links a pantallas no implementadas ("Agregar niño", "Editar", "Resumen del día", "Vincular otro padre", badge VINCULAR) usan `href="#"`.
-- [ ] `Avatar`, `KidCard`, `ChildProfileHeader`, `AllergiesCard`, `ChildDetails` y `ParentsCard` no importan `mock-children.ts`; reciben toda su data por props.
-- [ ] `app/page.tsx` pasa `activeItem="feed"` al `<Sidebar />` y su UI visual no cambia respecto a SPEC 01.
-- [ ] Los tokens nuevos en `app/globals.css` están definidos en `@theme inline` (no como estilos inline en JSX).
-- [ ] `npm run lint` finaliza sin errores.
-- [ ] `npx tsc --noEmit` finaliza sin errores.
-- [ ] `npm run dev` no registra errores en consola al cargar `/ninos` ni `/ninos/mateo`.
+- [x] `app/ninos/page.tsx` renderiza la lista de niños en `/ninos`.
+- [x] `app/ninos/[id]/page.tsx` renderiza el perfil del niño en `/ninos/<id>` usando `params.id` para resolver el mock.
+- [x] El sidebar marca "Niños" como activo en `/ninos` y `/ninos/[id]`, y sigue marcando "Feed" activo en `/` (regresión nula).
+- [x] La página Lista muestra el header "GESTIÓN" + "Niños" + botón "Agregar niño".
+- [x] La página Lista muestra el input "Buscar niño…" (solo visual, sin handler).
+- [x] La página Lista muestra la sección "SALA SOLES · 8 niños" y un grid 2 columnas con exactamente 8 KidCards replicando nombres/edades del mockup.
+- [x] Cada KidCard muestra avatar (color + inicial), nombre (Fredoka), "edad años · N padres vinculados" o "sin padres vinculados", y slot derecho correcto: badge alérgeno (MANÍ/LACTOSA) si `allergens.length > 0`, badge VINCULAR si no tiene alérgenos y `linkedParents.length === 0`, chevron en caso contrario.
+- [x] La página Perfil muestra el link "Volver a Niños" apuntando a `/ninos`.
+- [x] La página Perfil muestra `ChildProfileHeader` con avatar 84px, nombre (Fredoka 28px), "edad · Sala X" y botón "Editar".
+- [x] La página Perfil muestra `AllergiesCard` (rosa, ícono warning, "Alergias y notas" + notas) solo si el niño tiene `allergyNotes`.
+- [x] La página Perfil muestra `ChildDetails` con filas "Fecha de nacimiento" / "Sala" / "Ingreso" y los valores del mock.
+- [x] La página Perfil muestra el botón "Resumen del día" (fondo `--color-text`) y debajo `ParentsCard`.
+- [x] `ParentsCard` lista cada padre con avatar + nombre + "roleLabel · statusLabel lower" + badge estado (ACTIVA verde / PENDIENTE amarillo) y el link "Vincular otro padre" al final.
+- [x] Todos los links a pantallas no implementadas ("Agregar niño", "Editar", "Resumen del día", "Vincular otro padre", badge VINCULAR) usan `href="#"`.
+- [x] `Avatar`, `KidCard`, `ChildProfileHeader`, `AllergiesCard`, `ChildDetails` y `ParentsCard` no importan `mock-children.ts`; reciben toda su data por props.
+- [x] `app/page.tsx` pasa `activeItem="feed"` al `<Sidebar />` y su UI visual no cambia respecto a SPEC 01.
+- [x] Los tokens nuevos en `app/globals.css` están definidos en `@theme inline` (no como estilos inline en JSX).
+- [x] `npm run lint` finaliza sin errores.
+- [x] `npx tsc --noEmit` finaliza sin errores.
+- [x] `npm run dev` no registra errores en consola al cargar `/ninos` ni `/ninos/mateo`.
 
 ## Decisions
 

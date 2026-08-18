@@ -8,11 +8,12 @@ import ParentsCard from "@/app/_components/ninos/parents-card";
 import { getChildById } from "@/app/_lib/mock-children";
 
 interface NinosIdPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default function NinosIdPage({ params }: NinosIdPageProps) {
-  const child = getChildById(params.id);
+export default async function NinosIdPage({ params }: NinosIdPageProps) {
+  const { id } = await params;
+  const child = getChildById(id);
 
   if (!child) {
     return (
