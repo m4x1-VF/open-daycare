@@ -1,4 +1,56 @@
-export default function Sidebar() {
+import { NavItem } from "@/_lib/child-types";
+
+interface SidebarProps {
+  activeItem?: NavItem;
+}
+
+export default function Sidebar({ activeItem = "feed" }: SidebarProps) {
+  const navItems: { key: NavItem; label: string; href: string; icon: React.ReactNode }[] = [
+    {
+      key: "feed",
+      label: "Feed",
+      href: "/",
+      icon: (
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
+        </svg>
+      ),
+    },
+    {
+      key: "ninos",
+      label: "Niños",
+      href: "/ninos",
+      icon: (
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="9" cy="7" r="3" />
+          <circle cx="17" cy="9" r="2.4" />
+          <path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 20a5 5 0 0 1 5.5-4.9" />
+        </svg>
+      ),
+    },
+    {
+      key: "avisos",
+      label: "Avisos",
+      href: "#",
+      icon: (
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0" />
+        </svg>
+      ),
+    },
+    {
+      key: "cuenta",
+      label: "Mi cuenta",
+      href: "#",
+      icon: (
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      ),
+    },
+  ];
+
   return (
     <aside className="w-[248px] flex-none bg-card border-r border-border flex flex-col p-6 px-4 sticky top-0 h-screen">
       <a
@@ -50,81 +102,23 @@ export default function Sidebar() {
       </a>
 
       <nav className="flex flex-col gap-1 flex-1">
-        <a
-          href="#"
-          className="flex items-center gap-3 py-[11px] px-3 rounded-xl bg-nav-active-bg text-nav-active-text font-extrabold text-[14.5px]"
-        >
-          <svg
-            width="19"
-            height="19"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
-          </svg>
-          Feed
-        </a>
-        <a
-          href="#"
-          className="flex items-center gap-3 py-[11px] px-3 rounded-xl text-nav-inactive font-semibold text-[14.5px]"
-        >
-          <svg
-            width="19"
-            height="19"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="9" cy="7" r="3" />
-            <circle cx="17" cy="9" r="2.4" />
-            <path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 20a5 5 0 0 1 5.5-4.9" />
-          </svg>
-          Niños
-        </a>
-        <a
-          href="#"
-          className="flex items-center gap-3 py-[11px] px-3 rounded-xl text-nav-inactive font-semibold text-[14.5px]"
-        >
-          <svg
-            width="19"
-            height="19"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0" />
-          </svg>
-          Avisos
-        </a>
-        <a
-          href="#"
-          className="flex items-center gap-3 py-[11px] px-3 rounded-xl text-nav-inactive font-semibold text-[14.5px]"
-        >
-          <svg
-            width="19"
-            height="19"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
-          Mi cuenta
-        </a>
+        {navItems.map((item) => {
+          const isActive = activeItem === item.key;
+          return (
+            <a
+              key={item.key}
+              href={item.href}
+              className={
+                isActive
+                  ? "flex items-center gap-3 py-[11px] px-3 rounded-xl bg-nav-active-bg text-nav-active-text font-extrabold text-[14.5px]"
+                  : "flex items-center gap-3 py-[11px] px-3 rounded-xl text-nav-inactive font-semibold text-[14.5px]"
+              }
+            >
+              {item.icon}
+              {item.label}
+            </a>
+          );
+        })}
       </nav>
 
       <div className="border-t border-border pt-[14px] mt-2.5">
