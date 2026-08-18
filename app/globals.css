@@ -41,6 +41,19 @@
   --color-photo-placeholder-text: #B0A290;
   --color-section-label: #8A7C6D;
   --color-section-line: #E7DAC8;
+
+  --color-allergy-badge-bg: #FBD8CC;
+  --color-allergy-badge: #D9684A;
+  --color-link-badge-bg: #F9D2DE;
+  --color-link-badge: #C56486;
+  --color-allergy-card-bg: #FBDAD6;
+  --color-allergy-icon-bg: #F4A8A0;
+  --color-allergy-title: #C5413A;
+  --color-allergy-text: #B25249;
+  --color-status-active-bg: #CFEBD8;
+  --color-status-active: #3E9B6C;
+  --color-status-pending-bg: #F7E7A6;
+  --color-status-pending: #9A7B1E;
 }
 
 body {
