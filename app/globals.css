@@ -54,6 +54,22 @@
   --color-status-active: #3E9B6C;
   --color-status-pending-bg: #F7E7A6;
   --color-status-pending: #9A7B1E;
+
+  --color-auth-bg: #FBF4EC;
+  --color-auth-brand-start: #F6A98E;
+  --color-auth-brand-mid: #F2937A;
+  --color-auth-brand-end: #EC7E62;
+  --color-auth-input-border: #EADFD0;
+  --color-auth-input-text: #3F362E;
+  --color-auth-muted: #94887B;
+  --color-auth-link: #C5503A;
+  --color-auth-btn-start: #F4977E;
+  --color-auth-btn-end: #EE8164;
+  --color-auth-invite-bg: #A9D9E8;
+  --color-auth-invite-text: #1F7A93;
+  --color-auth-consent-bg: #FBF1D6;
+  --color-auth-consent-text: #8A7234;
+  --color-auth-consent-check: #5FB97E;
 }
 
 body {

@@ -1,6 +1,6 @@
 # SPEC 03 — Login y activar cuenta
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** —
 > **Fecha:** 2026-08-18
 > **Objetivo:** Construir las pantallas de login y activar cuenta replicando `reference/pantallas/login.dc.html` (sin toggle Personal/Familia) y `reference/pantallas/activar-cuenta.dc.html` (solo UI, sin lógica de autenticación).
@@ -47,31 +47,31 @@ Esta spec **no introduce datos persistentes ni nuevos tipos**. Los formularios s
 
 ## Acceptance criteria
 
-- [ ] `app/(auth)/login/page.tsx` renderiza el login en `/login`.
-- [ ] `app/(auth)/activar-cuenta/page.tsx` renderiza la activación en `/activar-cuenta`.
-- [ ] El layout compartido `app/(auth)/layout.tsx` no renderiza sidebar ni TopBar.
-- [ ] La página Login muestra el panel de branding a la izquierda (gradiente coral, logo, título, subtítulo, nombre sala) en `≥768px`.
-- [ ] La página Login oculta el panel de branding en `<768px` y el formulario se centra.
-- [ ] El LoginForm NO tiene toggle Personal/Familia.
-- [ ] El LoginForm muestra título "Iniciar sesión" (Fredoka 30px) y subtítulo "Ingresá para ver el día de hoy.".
-- [ ] El LoginForm muestra input EMAIL con valor `caro@opendaycare.com` e input CONTRASEÑA con placeholder `••••••••`.
-- [ ] El LoginForm muestra link "¿Olvidaste tu contraseña?" con `href="#"`.
-- [ ] El LoginForm muestra botón naranja "Iniciar sesión" con `href="/"`.
-- [ ] El LoginForm muestra pie "¿Te invitó la guardería? Activá tu cuenta" con link a `/activar-cuenta`.
-- [ ] El ActivateAccountForm muestra ícono sol con gradiente y título "Bienvenida a OpenDayCare" (Fredoka 32px).
-- [ ] El ActivateAccountForm muestra card de invitación con avatar "M" (fondo `#A9D9E8`, texto `#1F7A93`) y texto "Te invitaron a seguir a" + "Mateo · Sala Soles".
-- [ ] El ActivateAccountForm muestra input CÓDIGO DE INVITACIÓN con valor `7K4P9` en tipografía Fredoka con letter-spacing.
-- [ ] El ActivateAccountForm muestra input EMAIL con valor `lucia.fernandez@gmail.com` e input CREAR CONTRASEÑA con valor `contraseña`.
-- [ ] El ActivateAccountForm muestra checkbox de autorización de fotos visualmente checked (fondo amarillo `#FBF1D6`, check verde `#5FB97E`).
-- [ ] El ActivateAccountForm muestra botón "Activar mi cuenta" con `href="#"`.
-- [ ] El ActivateAccountForm muestra pie "¿Ya tenés cuenta? Iniciar sesión" con link a `/login`.
-- [ ] Todos los inputs son estáticos (sin `useState`, sin handlers).
-- [ ] `LoginForm`, `ActivateAccountForm` y ambas páginas son **Server Components** (sin `"use client"`).
-- [ ] `LoginForm` y `ActivateAccountForm` no importan datos externos; reciben toda su data por props o literales internos.
-- [ ] Los tokens nuevos en `app/globals.css` están definidos en `@theme inline`.
-- [ ] `npm run lint` finaliza sin errores.
-- [ ] `npx tsc --noEmit` finaliza sin errores.
-- [ ] `npm run dev` no registra errores en consola al cargar `/login` ni `/activar-cuenta`.
+- [x] `app/(auth)/login/page.tsx` renderiza el login en `/login`.
+- [x] `app/(auth)/activar-cuenta/page.tsx` renderiza la activación en `/activar-cuenta`.
+- [x] El layout compartido `app/(auth)/layout.tsx` no renderiza sidebar ni TopBar.
+- [x] La página Login muestra el panel de branding a la izquierda (gradiente coral, logo, título, subtítulo, nombre sala) en `≥768px`.
+- [x] La página Login oculta el panel de branding en `<768px` y el formulario se centra.
+- [x] El LoginForm NO tiene toggle Personal/Familia.
+- [x] El LoginForm muestra título "Iniciar sesión" (Fredoka 30px) y subtítulo "Ingresá para ver el día de hoy.".
+- [x] El LoginForm muestra input EMAIL con valor `caro@opendaycare.com` e input CONTRASEÑA con placeholder `••••••••`.
+- [x] El LoginForm muestra link "¿Olvidaste tu contraseña?" con `href="#"`.
+- [x] El LoginForm muestra botón naranja "Iniciar sesión" con `href="/"`.
+- [x] El LoginForm muestra pie "¿Te invitó la guardería? Activá tu cuenta" con link a `/activar-cuenta`.
+- [x] El ActivateAccountForm muestra ícono sol con gradiente y título "Bienvenida a OpenDayCare" (Fredoka 32px).
+- [x] El ActivateAccountForm muestra card de invitación con avatar "M" (fondo `#A9D9E8`, texto `#1F7A93`) y texto "Te invitaron a seguir a" + "Mateo · Sala Soles".
+- [x] El ActivateAccountForm muestra input CÓDIGO DE INVITACIÓN con valor `7K4P9` en tipografía Fredoka con letter-spacing.
+- [x] El ActivateAccountForm muestra input EMAIL con valor `lucia.fernandez@gmail.com` e input CREAR CONTRASEÑA con valor `contraseña`.
+- [x] El ActivateAccountForm muestra checkbox de autorización de fotos visualmente checked (fondo amarillo `#FBF1D6`, check verde `#5FB97E`).
+- [x] El ActivateAccountForm muestra botón "Activar mi cuenta" con `href="#"`.
+- [x] El ActivateAccountForm muestra pie "¿Ya tenés cuenta? Iniciar sesión" con link a `/login`.
+- [x] Todos los inputs son estáticos (sin `useState`, sin handlers).
+- [x] `LoginForm`, `ActivateAccountForm` y ambas páginas son **Server Components** (sin `"use client"`).
+- [x] `LoginForm` y `ActivateAccountForm` no importan datos externos; reciben toda su data por props o literales internos.
+- [x] Los tokens nuevos en `app/globals.css` están definidos en `@theme inline`.
+- [x] `npm run lint` finaliza sin errores.
+- [x] `npx tsc --noEmit` finaliza sin errores.
+- [x] `npm run dev` no registra errores en consola al cargar `/login` ni `/activar-cuenta`.
 
 ## Decisions
 
