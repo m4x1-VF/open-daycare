@@ -97,7 +97,7 @@ function generateInviteCode(): string {
 - [x] Nombre vacío muestra error inline "El nombre es obligatorio".
 - [x] Email vacío muestra error inline "El email es obligatorio".
 - [x] Email sin `@` o sin dominio válido muestra error inline "Formato de email inválido".
-- [ ] Email duplicado (ya existe en `linkedParents`) muestra error inline "Ya existe un padre vinculado con ese email".
+- [x] Email duplicado (ya existe en `linkedParents`) muestra error inline "Ya existe un padre vinculado con ese email".
 - [x] El botón "Enviar invitación" permanece deshabilitado mientras algún campo obligatorio esté incompleto, inválido o el parentesco no esté seleccionado.
 - [x] Al enviar con todos los campos válidos, el padre nuevo aparece en `ParentsCard` con avatar (inicial + color rotativo), nombre, roleLabel y badge PENDIENTE.
 - [x] Después de enviar, la modal se cierra y el form se resetea.
