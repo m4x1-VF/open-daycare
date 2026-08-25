@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Child } from "@/app/_lib/child-types";
 import { ROOMS } from "@/app/_lib/rooms";
 
@@ -39,6 +39,21 @@ export default function AddChildModal({
   const [touchedBirthdate, setTouchedBirthdate] = useState(false);
   const [touchedRoom, setTouchedRoom] = useState(false);
 
+  const [dataState, setDataState] = useState<"open" | "closing">();
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const shouldRender = open || dataState === "closing";
+
+  useEffect(() => {
+    if (!shouldRender) return;
+    
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [shouldRender]);
+
   const nameError = touchedName && !name.trim() ? "El nombre es obligatorio" : "";
   const birthdateError = touchedBirthdate
     ? !birthdate.trim()
@@ -65,10 +80,52 @@ export default function AddChildModal({
     setTouchedRoom(false);
   }
 
-  function handleClose() {
-    resetForm();
+  const handleClose = useCallback(() => {
+    setName("");
+    setBirthdate("");
+    setRoom("");
+    setAllergies("");
+    setMedicalNotes("");
+    setTouchedName(false);
+    setTouchedBirthdate(false);
+    setTouchedRoom(false);
     onClose();
-  }
+  }, [onClose]);
+
+  useEffect(() => {
+    if (open) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setDataState("open");
+        });
+      });
+      const focusTimer = setTimeout(() => {
+        nameInputRef.current?.focus();
+      }, 50);
+      return () => clearTimeout(focusTimer);
+    } else if (dataState === "open") {
+      queueMicrotask(() => setDataState("closing"));
+    }
+  }, [open, dataState]);
+
+  useEffect(() => {
+    if (dataState === "closing") {
+      const timer = setTimeout(() => {
+        setDataState(undefined);
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [dataState]);
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape" && dataState === "open") {
+        handleClose();
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [dataState, handleClose]);
 
   function handleSave() {
     setTouchedName(true);
@@ -121,20 +178,27 @@ export default function AddChildModal({
     resetForm();
   }
 
-  if (!open) return null;
+  if (!shouldRender) return null;
+
+  const inputBase =
+    "modal-input w-full py-[13px] px-4 rounded-[14px] border-[1.5px] bg-white text-[15px] text-text placeholder:text-[#B6A99B] transition-colors duration-200 focus:outline-none focus:border-coral-dark focus:ring-2 focus:ring-coral-light/20 focus:ring-offset-0";
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-10 px-6">
       <div
-        className="absolute inset-0 bg-black/40"
+        className="modal-overlay absolute inset-0 bg-black/40"
+        data-state={dataState}
         onClick={handleClose}
       />
-      <div className="relative w-full max-w-[520px] bg-[#FBF4EC] border border-border rounded-[24px] shadow-[0_20px_50px_-24px_rgba(63,54,46,0.35)] overflow-hidden">
+      <div
+        className="modal-card relative w-full max-w-[520px] bg-[#FBF4EC] border border-border rounded-[24px] shadow-[0_20px_50px_-24px_rgba(63,54,46,0.35)] overflow-hidden"
+        data-state={dataState}
+      >
         <div className="flex items-center justify-between px-[26px] py-5 border-b border-border">
           <button
             type="button"
             onClick={handleClose}
-            className="text-[15px] font-bold text-[#94887B] hover:text-text transition-colors"
+            className="text-[15px] font-bold text-[#94887B] hover:text-text transition-colors active:scale-[0.97] transition-transform duration-150"
           >
             Cancelar
           </button>
@@ -145,7 +209,7 @@ export default function AddChildModal({
             type="button"
             onClick={handleSave}
             disabled={!isFormValid}
-            className="text-[15px] font-extrabold text-coral-dark disabled:text-[#C4B8AA] disabled:cursor-not-allowed transition-colors"
+            className="text-[15px] font-extrabold text-coral-dark disabled:text-[#C4B8AA] disabled:cursor-not-allowed transition-colors active:scale-[0.97] transition-transform duration-150"
           >
             Guardar
           </button>
@@ -156,11 +220,12 @@ export default function AddChildModal({
             NOMBRE COMPLETO
           </div>
           <input
+            ref={nameInputRef}
             value={name}
             onChange={(e) => setName(e.target.value)}
             onBlur={() => setTouchedName(true)}
             placeholder="Ej. Martina López"
-            className={`w-full py-[13px] px-4 rounded-[14px] border-[1.5px] bg-white text-[15px] text-text placeholder:text-[#B6A99B] mb-1 ${
+            className={`${inputBase} mb-1 ${
               nameError ? "border-red-400" : "border-[#EADFD0]"
             }`}
           />
@@ -179,7 +244,7 @@ export default function AddChildModal({
                 onChange={(e) => setBirthdate(e.target.value)}
                 onBlur={() => setTouchedBirthdate(true)}
                 placeholder="dd/mm/aaaa"
-                className={`w-full py-[13px] px-4 rounded-[14px] border-[1.5px] bg-white text-[15px] text-text placeholder:text-[#B6A99B] ${
+                className={`${inputBase} ${
                   birthdateError ? "border-red-400" : "border-[#EADFD0]"
                 }`}
               />
@@ -202,7 +267,7 @@ export default function AddChildModal({
                     setTouchedRoom(true);
                   }}
                   onBlur={() => setTouchedRoom(true)}
-                  className={`w-full py-[13px] px-4 rounded-[14px] border-[1.5px] bg-white text-[15px] font-bold text-text appearance-none cursor-pointer ${
+                  className={`${inputBase} font-bold text-text appearance-none cursor-pointer ${
                     roomError ? "border-red-400" : "border-[#EADFD0]"
                   } ${!room ? "text-[#B6A99B] font-normal" : ""}`}
                 >
@@ -244,7 +309,7 @@ export default function AddChildModal({
             value={allergies}
             onChange={(e) => setAllergies(e.target.value)}
             placeholder="Ej. Maní, Lactosa"
-            className="w-full py-[13px] px-4 rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-[15px] text-text placeholder:text-[#B6A99B] mb-[18px]"
+            className={`${inputBase} border-[#EADFD0] mb-[18px]`}
           />
 
           <div className="text-[12px] font-extrabold tracking-[.7px] text-[#94887B] mb-2">
@@ -254,7 +319,7 @@ export default function AddChildModal({
             value={medicalNotes}
             onChange={(e) => setMedicalNotes(e.target.value)}
             placeholder="Indicaciones, medicación, contactos…"
-            className="w-full min-h-[90px] resize-y py-[13px] px-4 rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-[15px] text-text placeholder:text-[#B6A99B] leading-normal"
+            className="modal-input w-full min-h-[90px] resize-y py-[13px] px-4 rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-[15px] text-text placeholder:text-[#B6A99B] leading-normal transition-colors duration-200 focus:outline-none focus:border-coral-dark focus:ring-2 focus:ring-coral-light/20 focus:ring-offset-0"
           />
         </div>
       </div>

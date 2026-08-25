@@ -76,3 +76,58 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+.modal-overlay {
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+}
+
+.modal-overlay[data-state="open"] {
+  opacity: 1;
+}
+
+.modal-overlay[data-state="closing"] {
+  opacity: 0;
+  transition-duration: 150ms;
+}
+
+.modal-card {
+  opacity: 0;
+  transform: scale(0.95);
+  transition:
+    opacity 200ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.modal-card[data-state="open"] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.modal-card[data-state="closing"] {
+  opacity: 0;
+  transform: scale(0.95);
+  transition-duration: 150ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay {
+    transition-duration: 100ms;
+  }
+  .modal-card {
+    transform: none;
+    transition: opacity 100ms ease-out;
+  }
+  .modal-card[data-state="open"] {
+    transform: none;
+  }
+  .modal-card[data-state="closing"] {
+    transform: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .modal-input:hover {
+    border-color: #D4C4B0;
+  }
+}
