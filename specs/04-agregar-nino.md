@@ -1,6 +1,6 @@
 # SPEC 04 — Modal Agregar niño
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 02
 > **Fecha:** 2026-08-25
 > **Objetivo:** Implementar la modal de agregar niño como overlay sobre `/ninos` con validación inline, que al guardar agrega el niño al listado en memoria.
@@ -67,26 +67,26 @@ type Room = (typeof ROOMS)[number];
 
 ## Acceptance criteria
 
-- [ ] Click en "Agregar niño" en `/ninos` abre la modal overlay sin cambiar la URL.
-- [ ] La modal muestra header con "Cancelar" (cierra), título "Agregar niño", "Guardar" (disabled por defecto).
-- [ ] La modal muestra los 5 campos: nombre completo, fecha de nacimiento, sala, alergias, notas médicas.
-- [ ] El dropdown de sala muestra 3 opciones: "Terra", "Sol", "Luna" y arranca sin selección.
-- [ ] Los campos alergias y notas médicas son opcionales (sin validación).
-- [ ] Dejar nombre vacío y tocar Guardar muestra error inline "El nombre es obligatorio".
-- [ ] Dejar fecha vacía muestra error inline "La fecha es obligatoria". Ingresar formato inválido (ej "abc" o "32/13/2020") muestra "Formato inválido (dd/mm/aaaa)".
-- [ ] No seleccionar sala muestra error inline "Seleccioná una sala".
-- [ ] El botón "Guardar" permanece deshabilitado mientras alguno de los 3 campos obligatorios esté incompleto o inválido.
-- [ ] Al guardar con los 3 campos válidos, el niño nuevo aparece en el listado de `/ninos` con avatar (inicial + color rotativo), nombre, edad calculada, sala seleccionada, y badges de alergias si corresponde.
-- [ ] Después de guardar, la modal se cierra y el form se resetea.
-- [ ] Click en "Cancelar" cierra la modal sin agregar nada y resetea el form.
-- [ ] Al refrescar la página, los niños agregados se pierden (solo viven en memoria).
-- [ ] Los 8 niños originales del mock siguen apareciendo sin cambios.
-- [ ] `AddChildModal` y `NinosManager` son Client Components (`"use client"`).
-- [ ] `AddChildModal` no importa `mock-children.ts`; recibe datos por callbacks (`onSave`).
-- [ ] `NinosManager` recibe `initialChildren` por props y no importa directamente el mock.
-- [ ] `npm run lint` finaliza sin errores.
-- [ ] `npx tsc --noEmit` finaliza sin errores.
-- [ ] `npm run dev` no registra errores en consola al cargar `/ninos` ni al abrir/cerrar la modal.
+- [x] Click en "Agregar niño" en `/ninos` abre la modal overlay sin cambiar la URL.
+- [x] La modal muestra header con "Cancelar" (cierra), título "Agregar niño", "Guardar" (disabled por defecto).
+- [x] La modal muestra los 5 campos: nombre completo, fecha de nacimiento, sala, alergias, notas médicas.
+- [x] El dropdown de sala muestra 3 opciones: "Terra", "Sol", "Luna" y arranca sin selección.
+- [x] Los campos alergias y notas médicas son opcionales (sin validación).
+- [x] Dejar nombre vacío y tocar Guardar muestra error inline "El nombre es obligatorio".
+- [x] Dejar fecha vacía muestra error inline "La fecha es obligatoria". Ingresar formato inválido (ej "abc" o "32/13/2020") muestra "Formato inválido (dd/mm/aaaa)".
+- [x] No seleccionar sala muestra error inline "Seleccioná una sala".
+- [x] El botón "Guardar" permanece deshabilitado mientras alguno de los 3 campos obligatorios esté incompleto o inválido.
+- [x] Al guardar con los 3 campos válidos, el niño nuevo aparece en el listado de `/ninos` con avatar (inicial + color rotativo), nombre, edad calculada, sala seleccionada, y badges de alergias si corresponde.
+- [x] Después de guardar, la modal se cierra y el form se resetea.
+- [x] Click en "Cancelar" cierra la modal sin agregar nada y resetea el form.
+- [x] Al refrescar la página, los niños agregados se pierden (solo viven en memoria).
+- [x] Los 8 niños originales del mock siguen apareciendo sin cambios.
+- [x] `AddChildModal` y `NinosManager` son Client Components (`"use client"`).
+- [x] `AddChildModal` no importa `mock-children.ts`; recibe datos por callbacks (`onSave`).
+- [x] `NinosManager` recibe `initialChildren` por props y no importa directamente el mock.
+- [x] `npm run lint` finaliza sin errores.
+- [x] `npx tsc --noEmit` finaliza sin errores.
+- [x] `npm run dev` no registra errores en consola al cargar `/ninos` ni al abrir/cerrar la modal.
 
 ## Decisions
 
