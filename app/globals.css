@@ -70,6 +70,9 @@
   --color-auth-consent-bg: #FBF1D6;
   --color-auth-consent-text: #8A7234;
   --color-auth-consent-check: #5FB97E;
+
+  --color-invite-border: #E6D08A;
+  --color-invite-label: #A88526;
 }
 
 body {

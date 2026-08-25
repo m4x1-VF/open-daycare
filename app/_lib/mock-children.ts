@@ -17,6 +17,7 @@ export const mockChildren: Child[] = [
       {
         id: "lucia",
         name: "Lucía Fernández",
+        email: "lucia.fernandez@example.com",
         initial: "L",
         avatarBg: "#C9B6E8",
         avatarColor: "#fff",
@@ -28,6 +29,7 @@ export const mockChildren: Child[] = [
       {
         id: "diego",
         name: "Diego Fernández",
+        email: "diego.fernandez@example.com",
         initial: "D",
         avatarBg: "#A9C7E8",
         avatarColor: "#fff",
@@ -53,6 +55,7 @@ export const mockChildren: Child[] = [
       {
         id: "carla",
         name: "Carla Méndez",
+        email: "carla.mendez@example.com",
         initial: "C",
         avatarBg: "#F4DC8E",
         avatarColor: "#9A7B1E",
@@ -78,6 +81,7 @@ export const mockChildren: Child[] = [
       {
         id: "ana",
         name: "Ana Ruiz",
+        email: "ana.ruiz@example.com",
         initial: "A",
         avatarBg: "#F4B8CC",
         avatarColor: "#C44A7A",
@@ -89,6 +93,7 @@ export const mockChildren: Child[] = [
       {
         id: "pedro",
         name: "Pedro Ruiz",
+        email: "pedro.ruiz@example.com",
         initial: "P",
         avatarBg: "#A9D9E8",
         avatarColor: "#1F7A93",
@@ -127,6 +132,7 @@ export const mockChildren: Child[] = [
       {
         id: "mariana",
         name: "Mariana Díaz",
+        email: "mariana.diaz@example.com",
         initial: "M",
         avatarBg: "#B9DEC4",
         avatarColor: "#3E8B62",
@@ -152,6 +158,7 @@ export const mockChildren: Child[] = [
       {
         id: "laura",
         name: "Laura Castro",
+        email: "laura.castro@example.com",
         initial: "L",
         avatarBg: "#C9B6E8",
         avatarColor: "#7B5FC0",
@@ -177,6 +184,7 @@ export const mockChildren: Child[] = [
       {
         id: "silvia",
         name: "Silvia Romero",
+        email: "silvia.romero@example.com",
         initial: "S",
         avatarBg: "#F4DC8E",
         avatarColor: "#9A7B1E",
@@ -202,6 +210,7 @@ export const mockChildren: Child[] = [
       {
         id: "martin",
         name: "Martín Vega",
+        email: "martin.vega@example.com",
         initial: "M",
         avatarBg: "#A9C7E8",
         avatarColor: "#fff",

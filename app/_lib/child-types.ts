@@ -3,6 +3,7 @@ export type NavItem = "feed" | "ninos" | "avisos" | "cuenta";
 export interface LinkedParent {
   id: string;
   name: string;
+  email: string;
   initial: string;
   avatarBg: string;
   avatarColor: string;

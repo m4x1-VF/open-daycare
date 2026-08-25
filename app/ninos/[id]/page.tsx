@@ -4,7 +4,7 @@ import TopBar from "@/app/_components/feed/top-bar";
 import ChildProfileHeader from "@/app/_components/ninos/child-profile-header";
 import AllergiesCard from "@/app/_components/ninos/allergies-card";
 import ChildDetails from "@/app/_components/ninos/child-details";
-import ParentsCard from "@/app/_components/ninos/parents-card";
+import ParentsSection from "@/app/_components/ninos/parents-section";
 import { getChildById } from "@/app/_lib/mock-children";
 
 interface NinosIdPageProps {
@@ -100,7 +100,7 @@ export default async function NinosIdPage({ params }: NinosIdPageProps) {
                   Resumen del día
                 </a>
 
-                <ParentsCard parents={child.linkedParents} />
+                <ParentsSection child={child} />
               </div>
             </div>
           </div>

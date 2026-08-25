@@ -3,9 +3,10 @@ import { Avatar } from "@/app/_components/ui/avatar";
 
 interface ParentsCardProps {
   parents: LinkedParent[];
+  onLinkParent: () => void;
 }
 
-export default function ParentsCard({ parents }: ParentsCardProps) {
+export default function ParentsCard({ parents, onLinkParent }: ParentsCardProps) {
   return (
     <div className="bg-card border border-border rounded-2xl p-4 px-[18px]">
       <div className="text-[12.5px] font-extrabold tracking-[.8px] text-section-label mb-[14px]">
@@ -39,7 +40,11 @@ export default function ParentsCard({ parents }: ParentsCardProps) {
             </span>
           </div>
         ))}
-        <a href="#" className="flex items-center gap-3 pt-2">
+        <button
+          type="button"
+          onClick={onLinkParent}
+          className="flex items-center gap-3 pt-2 hover:opacity-80 transition-opacity"
+        >
           <span className="w-10 h-10 rounded-full border-[1.5px] border-dashed border-[#D8CBBA] flex items-center justify-center text-[#B0A290] flex-none">
             <svg
               width="18"
@@ -57,7 +62,7 @@ export default function ParentsCard({ parents }: ParentsCardProps) {
           <span className="font-extrabold text-[14.5px] text-edit">
             Vincular otro padre
           </span>
-        </a>
+        </button>
       </div>
     </div>
   );
