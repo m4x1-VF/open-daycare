@@ -2,8 +2,12 @@ import type { FeedPost, PostType } from "@/app/_lib/post-types";
 import { POST_TYPE_LABELS } from "@/app/_lib/post-types";
 
 const TAG_STYLES: Record<PostType, string> = {
+  meal: "bg-tag-meal-bg text-tag-meal",
+  nap: "bg-tag-nap-bg text-tag-nap",
   achievement: "bg-tag-achievement-bg text-tag-achievement",
   activity: "bg-tag-activity-bg text-tag-activity",
+  encouragement: "bg-tag-encouragement-bg text-tag-encouragement",
+  photo: "bg-tag-photo-bg text-tag-photo",
   announcement: "bg-tag-announcement-bg text-tag-announcement",
 };
 
@@ -57,7 +61,7 @@ export default function PostCard({ post }: { post: FeedPost }) {
           className={`flex items-center gap-[7px] py-1.5 px-3 rounded-full ${tagClass}`}
         >
           <span className="w-2 h-2 rounded-full bg-current" />
-          <span className="text-xs font-extrabold tracking-wide">
+          <span className="text-xs font-extrabold tracking-wide uppercase">
             {tagLabel}
           </span>
         </div>

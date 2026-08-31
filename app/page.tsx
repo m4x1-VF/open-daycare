@@ -1,8 +1,8 @@
 import Sidebar from "@/app/_components/feed/sidebar";
 import TopBar from "@/app/_components/feed/top-bar";
-import Composer from "@/app/_components/feed/composer";
-import PostCard from "@/app/_components/feed/post-card";
+import FeedSection from "@/app/_components/feed/feed-section";
 import { mockPosts } from "@/app/_lib/mock-posts";
+import { mockChildren } from "@/app/_lib/mock-children";
 
 export default function Home() {
   return (
@@ -28,20 +28,7 @@ export default function Home() {
               </p>
             </div>
 
-            <Composer />
-
-            <div className="flex items-center gap-[14px] mb-[14px]">
-              <span className="text-[12.5px] font-extrabold tracking-[.8px] text-section-label">
-                PUBLICADO HOY
-              </span>
-              <span className="flex-1 h-px bg-section-line" />
-            </div>
-
-            <div className="flex flex-col gap-4">
-              {mockPosts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
-            </div>
+            <FeedSection initialPosts={mockPosts} childList={mockChildren} />
           </div>
         </main>
       </div>
