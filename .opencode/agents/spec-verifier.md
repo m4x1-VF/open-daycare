@@ -3,7 +3,7 @@ description: >
   Verifica los acceptance criteria de un archivo de especificación (spec).
   Trigger: verificar spec, validar acceptance criteria, check spec, revisar spec.
 mode: subagent
-model: opencode-go/qwen3.8-fast
+model: opencode-go/qwen3.8-flash
 permission:
   read: allow
   edit:
