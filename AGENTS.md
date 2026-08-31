@@ -26,6 +26,7 @@ Next.js 16.3.0 App Router app (React 19.2.8, TypeScript strict, Tailwind v4). Cu
 - **Tailwind v4 (CSS-first).** No `tailwind.config.js`. Theme tokens are CSS variables defined in `app/globals.css` under `@theme inline` (`--color-background`, `--color-foreground`, `--font-geist-sans`, `--font-geist-mono`). PostCSS plugin is `@tailwindcss/postcss`. Style with utility classes + CSS vars, not a JS config.
 - **Path alias:** `@/*` → `./*` (repo root). Prefer `@/app/...`, `@/reference/...` over relative imports.
 - **Fonts:** Geist + Geist Mono via `next/font/google`, exposed as CSS vars on `<html>` in `app/layout.tsx`.
+- **LSP:** enabled globally via `"lsp": true` in `opencode.json`.
 
 ## Reference materials = product source of truth
 
@@ -33,16 +34,27 @@ Next.js 16.3.0 App Router app (React 19.2.8, TypeScript strict, Tailwind v4). Cu
 - `reference/screenshots/*.png` — rendered previews of the same screens.
 - **When implementing a UI screen, consult the matching `reference/pantallas/<name>.dc.html` first.** The current `app/page.tsx` is just the create-next-app starter and will be replaced.
 
+## Supabase / Database
+
+- Backend target: **Supabase (PostgreSQL)**. Remote MCP server configured in `opencode.json` with `project_ref=dkwzoobnaaxxpovxxgvt` and features `docs, account, database, debugging, development, functions, branching`.
+- **DB schema source of truth (NOT implemented yet):** project reference `docs` → `../07-DB-Schema` (`opendaycare-database-schema.md`). Table dictionary, ENUMs, and constraints live there. Consult it before creating migrations or types.
+- **Schema conventions:** PK `id` as `uuid` (`gen_random_uuid()`), `created_at`/`updated_at` as `timestamptz`. Everything persisted in the DB is in **English** (enums, tags, codes); UI labels are translated to Spanish at the view layer.
+- **Env vars:** `.env.template` is committed (gitignore exception `!.env.template`) as the reference for required variables. Never commit a real `.env`.
+
 ## Tooling
 
-- `opencode.json` only wires the **Playwright MCP** server (`npx @playwright/mcp@latest`). `.playwright-mcp/` is gitignored; treat its contents as scratch.
+- `opencode.json` wires MCP servers: **Playwright**, **Context7**, **Engram**, **Supabase** (baserow/github/open-design disabled). `.playwright-mcp/` is gitignored; treat its contents as scratch.
 - `CLAUDE.md` is just `@AGENTS.md` — do not duplicate content there; edit this file.
-- Locally installed skills: `spec` and `spec-impl` (see `skills-lock.json`, sourced from `klerith/fernando-skills`). Use the `spec` skill when starting a feature from the reference mockups, `spec-impl` to implement an approved spec.
+- Locally installed skills (see `skills-lock.json`):
+  - `spec` and `spec-impl` (from `klerith/fernando-skills`) — use `spec` when starting a feature from the reference mockups, `spec-impl` to implement an approved spec.
+  - `supabase` (from `supabase/agent-skills`, in `.agents/skills/supabase/`) — load for ANY Supabase task: Auth, RLS, Edge Functions, Storage, Realtime, CLI, `@supabase/ssr`, migrations, debugging.
+  - `supabase-postgres-best-practices` (from `supabase/agent-skills`, in `.agents/skills/supabase-postgres-best-practices/`) — load BEFORE writing/changing anything that lives in Postgres: tables, columns, indexes, RLS policies, triggers, functions, migrations, queries.
 
 ## MCPs
 
 - Playwright: screenshoots and any Playwright output go in `.playwright-mcp*`
 - Context7: use it to fetch current framework docs instead of relying on training data.
+- Supabase: schema changes, migrations, edge functions, logs, advisors. Prefer local dev + Supabase CLI before touching the remote project (`project_ref=dkwzoobnaaxxpovxxgvt`).
 
 ## Spec Driven Development - Skills
 

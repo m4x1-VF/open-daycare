@@ -1,5 +1,12 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "lsp": true,
+  "references": {
+    "docs": {
+      "path": "../07-DB-Schema", 
+      "description": "Database schema for the project, including tables, relationships, and constraints. This documentation provides a comprehensive overview of the database structure, aiding developers in understanding how data is organized and accessed within the application. It not implemented yet."
+    }
+  },
   "mcp": {
     "playwright": {
       "type": "local",
@@ -25,7 +32,9 @@
       "enabled": false
     },
     "supabase": {
-      "enabled": false
+      "type": "remote",
+      "url": "https://mcp.supabase.com/mcp?project_ref=dkwzoobnaaxxpovxxgvt&features=docs%2Caccount%2Cdatabase%2Cdebugging%2Cdevelopment%2Cfunctions%2Cbranching",
+      "enabled": true
     }
   }
 }
