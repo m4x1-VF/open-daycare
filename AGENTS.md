@@ -37,6 +37,11 @@ Next.js 16.3.0 App Router app (React 19.2.8, TypeScript strict, Tailwind v4). Cu
 ## Supabase / Database
 
 - Backend target: **Supabase (PostgreSQL)**. Remote MCP server configured in `opencode.json` with `project_ref=dkwzoobnaaxxpovxxgvt` and features `docs, account, database, debugging, development, functions, branching`.
+- **App ↔ DB interaction goes through the official Supabase packages for Next.js:** `@supabase/supabase-js` + `@supabase/ssr` (installed). Never hand-roll REST calls (`fetch` to `/rest/v1`) or add another ORM/data client. Use the helpers in `utils/supabase/`:
+  - `utils/supabase/server.ts` → `createClient(await cookies())` in Server Components, Server Actions and Route Handlers.
+  - `utils/supabase/client.ts` → `createClient()` (no args) in Client Components (browser; realtime, auth listeners).
+  - `proxy.ts` (project root — Next 16 replaced `middleware.ts`) → refreshes the auth session on every request via `supabase.auth.getClaims()`. Do not add a `middleware.ts`.
+  - Env vars `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` live in `.env.local` (real values gitignored). Auth checks on the server must use `getClaims()`/`getUser()`, never `getSession()`.
 - **Every DB change must produce a migration file.** Even when the schema change is applied directly to the remote project via MCP (`supabase_apply_migration` / `supabase_execute_sql`), always write the equivalent SQL to `supabase/migrations/YYYYMMDDHHMMSS_name.sql` (Supabase CLI naming convention) and commit it with the change. The file reflects the **final state** (fold later `ALTER`s into the original `CREATE`) so a clean database can be rebuilt from the folder alone. No DB manipulation without its file.
 - **DB schema source of truth (NOT implemented yet):** project reference `docs` → `../07-DB-Schema` (`opendaycare-database-schema.md`). Table dictionary, ENUMs, and constraints live there. Consult it before creating migrations or types.
 - **Schema conventions:** PK `id` as `uuid` (`gen_random_uuid()`), `created_at`/`updated_at` as `timestamptz`. Everything persisted in the DB is in **English** (enums, tags, codes); UI labels are translated to Spanish at the view layer.
