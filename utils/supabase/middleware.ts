@@ -26,7 +26,7 @@ export const updateSession = async (request: NextRequest) => {
   // IMPORTANT: Do not run any logic between createServerClient and getClaims.
   // getClaims validates the JWT and refreshes the session when needed.
   // Never trust getSession here: it does not revalidate the token.
-  await supabase.auth.getClaims();
+  const { data } = await supabase.auth.getClaims();
 
-  return supabaseResponse;
+  return { response: supabaseResponse, claims: data?.claims ?? null };
 };

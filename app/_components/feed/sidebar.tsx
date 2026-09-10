@@ -1,11 +1,40 @@
+import { cookies } from "next/headers";
 import { NavItem } from "@/app/_lib/child-types";
 import NewPostButton from "@/app/_components/feed/new-post-button";
+import { SignOutButton } from "@/app/_components/auth/sign-out-button";
+import { createClient } from "@/utils/supabase/server";
 
 interface SidebarProps {
   activeItem?: NavItem;
 }
 
-export default function Sidebar({ activeItem = "feed" }: SidebarProps) {
+const ROLE_LABELS: Record<string, string> = {
+  staff: "Staff",
+  parent: "Parent",
+  admin: "Admin",
+};
+
+export default async function Sidebar({ activeItem = "feed" }: SidebarProps) {
+  const supabase = createClient(await cookies());
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const fullName = (user?.user_metadata?.full_name as string) ?? "Usuario";
+  const role = (user?.user_metadata?.role as string) ?? "staff";
+  const daycareId = user?.user_metadata?.daycare_id as string | undefined;
+
+  let daycareName = "Guardería";
+  if (daycareId) {
+    const { data: daycare } = await supabase
+      .from("daycares")
+      .select("name")
+      .eq("id", daycareId)
+      .single();
+    if (daycare) daycareName = daycare.name;
+  }
+
+  const initial = fullName.charAt(0).toUpperCase();
+  const roleLabel = ROLE_LABELS[role] ?? role;
+  const daycareShort = daycareName.replace(/^Guardería\s*/i, "").trim() || daycareName;
   const navItems: { key: NavItem; label: string; href: string; icon: React.ReactNode }[] = [
     {
       key: "feed",
@@ -108,32 +137,17 @@ export default function Sidebar({ activeItem = "feed" }: SidebarProps) {
       <div className="border-t border-border pt-[14px] mt-2.5">
         <div className="flex items-center gap-[11px] px-2 py-1.5">
           <div className="w-[38px] h-[38px] rounded-full bg-coral text-white font-fredoka font-semibold text-base flex items-center justify-center flex-none">
-            C
+            {initial}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-extrabold text-sm text-text">
-              Caro Giménez
+            <div className="font-extrabold text-sm text-text truncate">
+              {fullName}
             </div>
-            <div className="text-xs text-text-faint">Maestra · Soles</div>
+            <div className="text-xs text-text-faint truncate">
+              {roleLabel} · {daycareShort}
+            </div>
           </div>
-          <a
-            href="#"
-            title="Cerrar sesión"
-            className="flex-none w-8 h-8 rounded-[10px] bg-cream text-text-muted flex items-center justify-center"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
-            </svg>
-          </a>
+          <SignOutButton className="flex-none w-8 h-8 rounded-[10px] bg-cream text-text-muted" />
         </div>
       </div>
     </aside>

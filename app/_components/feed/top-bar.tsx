@@ -1,3 +1,5 @@
+import { SignOutButton } from "@/app/_components/auth/sign-out-button";
+
 export default function TopBar() {
   return (
     <div className="flex md:hidden items-center gap-3 bg-card border-b border-border px-4 py-3 sticky top-0 z-10">
@@ -42,6 +44,8 @@ export default function TopBar() {
         </svg>
         Nueva publicación
       </a>
+
+      <SignOutButton className="flex-none w-9 h-9 rounded-xl bg-cream text-text-muted" />
 
       <div className="w-9 h-9 rounded-full bg-coral text-white font-fredoka font-semibold text-sm flex items-center justify-center flex-none">
         C

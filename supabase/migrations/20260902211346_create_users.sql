@@ -55,13 +55,58 @@ CREATE POLICY users_read
 
 -- Seed: 1 usuario staff de prueba. Password hardcodeada solo para pruebas
 -- (ver Risks en la spec): rotar o borrar antes de produccion.
-INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, raw_user_meta_data)
+--
+-- auth.users NO tiene defaults en la mayoria de sus columnas: para que el
+-- login funcione (GoTrue v2.196) la fila requiere instance_id = uuid.Nil,
+-- aud/role = 'authenticated', los tokens como '' (NO NULL: el ORM de GoTrue
+-- falla al escanear NULL en campos string) y su fila en auth.identities.
+-- Verificado en SPEC 08 (verificacion final). El daycare_id del metadata
+-- debe existir en daycares porque el trigger on_auth_user_created lo usa.
+INSERT INTO auth.users (
+  id, instance_id, aud, role, email,
+  encrypted_password, email_confirmed_at,
+  confirmation_token, recovery_token,
+  email_change_token_current, email_change_token_new, email_change,
+  phone_change_token, phone_change, reauthentication_token,
+  email_change_confirm_status,
+  raw_app_meta_data, raw_user_meta_data,
+  created_at, updated_at
+)
 VALUES (
   '00000000-0000-0000-0000-000000000001',
+  '00000000-0000-0000-0000-000000000000',
+  'authenticated',
+  'authenticated',
   'maxi@google.com',
   extensions.crypt('Abc123456@', extensions.gen_salt('bf')),
   now(),
-  '{"full_name": "Maxi", "role": "staff", "daycare_id": "00000000-0000-0000-0000-000000000001"}'::jsonb
+  '', '', '', '', '',
+  '', '', '',
+  0,
+  '{"provider": "email", "providers": ["email"]}'::jsonb,
+  jsonb_build_object(
+    'full_name', 'Maxi',
+    'role', 'staff',
+    'daycare_id', (SELECT id FROM daycares WHERE name = 'Guardería Sala Soles')
+  ),
+  now(),
+  now()
+);
+
+INSERT INTO auth.identities (id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+VALUES (
+  gen_random_uuid(),
+  '00000000-0000-0000-0000-000000000001',
+  'maxi@google.com',
+  jsonb_build_object(
+    'sub', '00000000-0000-0000-0000-000000000001',
+    'email', 'maxi@google.com',
+    'email_verified', true
+  ),
+  'email',
+  now(),
+  now(),
+  now()
 );
 
 INSERT INTO users (id, daycare_id, role, status, full_name)
