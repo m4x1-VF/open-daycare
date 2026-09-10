@@ -1,6 +1,6 @@
 # SPEC 08 — Autenticación email/password y protección de rutas
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 03, SPEC DB 02
 > **Fecha:** 2026-09-10
 > **Objetivo:** Conectar el formulario de login a Supabase Auth con email/password, implementar logout, crear el trigger automático en `auth.users` para la tabla `users`, y proteger todas las rutas excepto `/login` y `/activar-cuenta`.
