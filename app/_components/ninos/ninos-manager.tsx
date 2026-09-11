@@ -2,15 +2,28 @@
 
 import { useState } from "react";
 import { Child } from "@/app/_lib/child-types";
-import { nextAvatarColor } from "@/app/_lib/child-helpers";
+import { mapDbChildToChild } from "@/app/_lib/child-helpers";
+import { addChild } from "@/app/ninos/actions";
 import KidCard from "@/app/_components/ninos/kid-card";
 import AddChildModal from "@/app/_components/ninos/add-child-modal";
 
-interface NinosManagerProps {
-  initialChildren: Child[];
+interface AddChildInput {
+  full_name: string;
+  birth_date: string;
+  room_id: string;
+  allergy_tags: string[];
+  medical_notes?: string;
 }
 
-export default function NinosManager({ initialChildren }: NinosManagerProps) {
+interface NinosManagerProps {
+  initialChildren: Child[];
+  rooms: { id: string; name: string }[];
+}
+
+export default function NinosManager({
+  initialChildren,
+  rooms,
+}: NinosManagerProps) {
   const [children, setChildren] = useState<Child[]>(initialChildren);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -22,18 +35,17 @@ export default function NinosManager({ initialChildren }: NinosManagerProps) {
     setIsModalOpen(false);
   }
 
-  function handleSaveChild(child: Child) {
-    const colorIndex = children.length;
-    const avatar = nextAvatarColor(colorIndex);
-
-    const newChild: Child = {
-      ...child,
-      avatarBg: avatar.bg,
-      avatarColor: avatar.color,
-    };
-
-    setChildren([...children, newChild]);
-    setIsModalOpen(false);
+  async function handleSaveChild(data: AddChildInput) {
+    try {
+      const dbChild = await addChild(data);
+      const room = rooms.find((r) => r.id === dbChild.room_id);
+      const roomName = room?.name ?? "";
+      const uiChild = mapDbChildToChild(dbChild, roomName, children.length);
+      setChildren((prev) => [...prev, uiChild]);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Failed to add child:", error);
+    }
   }
 
   return (
@@ -88,26 +100,36 @@ export default function NinosManager({ initialChildren }: NinosManagerProps) {
         />
       </div>
 
-      <div className="flex items-center gap-3 mb-[14px]">
-        <span className="text-[12.5px] font-extrabold tracking-[.8px] text-text">
-          SALA SOLES
-        </span>
-        <span className="text-[13px] text-text-faint">
-          {children.length} niños
-        </span>
-        <span className="flex-1 h-px bg-section-line" />
-      </div>
-
-      <div className="grid grid-cols-2 gap-[14px]">
-        {children.map((child) => (
-          <KidCard key={child.id} child={child} />
+      {rooms
+        .map((room) => ({
+          room,
+          kids: children.filter((c) => c.room === room.name),
+        }))
+        .filter(({ kids }) => kids.length > 0)
+        .map(({ room, kids }) => (
+          <div key={room.id} className="mb-[22px]">
+            <div className="flex items-center gap-3 mb-[14px]">
+              <span className="text-[12.5px] font-extrabold tracking-[.8px] text-text">
+                SALA {room.name.toUpperCase()}
+              </span>
+              <span className="text-[13px] text-text-faint">
+                {kids.length} {kids.length === 1 ? "niño" : "niños"}
+              </span>
+              <span className="flex-1 h-px bg-section-line" />
+            </div>
+            <div className="grid grid-cols-2 gap-[14px]">
+              {kids.map((child) => (
+                <KidCard key={child.id} child={child} />
+              ))}
+            </div>
+          </div>
         ))}
-      </div>
 
       <AddChildModal
         open={isModalOpen}
         onClose={handleCloseModal}
         onSave={handleSaveChild}
+        rooms={rooms}
       />
     </>
   );

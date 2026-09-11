@@ -1,13 +1,20 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Child } from "@/app/_lib/child-types";
-import { ROOMS } from "@/app/_lib/rooms";
+
+interface AddChildData {
+  full_name: string;
+  birth_date: string;
+  room_id: string;
+  allergy_tags: string[];
+  medical_notes?: string;
+}
 
 interface AddChildModalProps {
   open: boolean;
   onClose: () => void;
-  onSave: (child: Child) => void;
+  onSave: (data: AddChildData) => Promise<void>;
+  rooms: { id: string; name: string }[];
 }
 
 function isValidDate(value: string): boolean {
@@ -28,12 +35,14 @@ export default function AddChildModal({
   open,
   onClose,
   onSave,
+  rooms,
 }: AddChildModalProps) {
   const [name, setName] = useState("");
   const [birthdate, setBirthdate] = useState("");
   const [room, setRoom] = useState("");
   const [allergies, setAllergies] = useState("");
   const [medicalNotes, setMedicalNotes] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const [touchedName, setTouchedName] = useState(false);
   const [touchedBirthdate, setTouchedBirthdate] = useState(false);
@@ -132,50 +141,25 @@ export default function AddChildModal({
     setTouchedBirthdate(true);
     setTouchedRoom(true);
 
-    if (!isFormValid) return;
+    if (!isFormValid || isSaving) return;
 
     const [day, month, year] = birthdate.split("/").map(Number);
-    const birth = new Date(year, month - 1, day);
-    const today = new Date();
-
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birth.getDate())
-    ) {
-      age--;
-    }
-
-    const months = [
-      "ene", "feb", "mar", "abr", "may", "jun",
-      "jul", "ago", "sep", "oct", "nov", "dic",
-    ];
-    const birthdateLabel = `${day} ${months[month - 1]} ${year}`;
-    const admissionLabel = `${months[today.getMonth()]} ${today.getFullYear()}`;
 
     const allergens = allergies
       .split(",")
       .map((a) => a.trim().toUpperCase())
       .filter((a) => a.length > 0);
 
-    const newChild: Child = {
-      id: crypto.randomUUID(),
-      name: name.trim(),
-      initial: name.trim()[0].toUpperCase(),
-      avatarBg: "",
-      avatarColor: "",
-      ageYears: age,
-      birthdateLabel,
-      room,
-      admissionLabel,
-      allergens,
-      allergyNotes: allergies || undefined,
-      linkedParents: [],
-    };
-
-    onSave(newChild);
-    resetForm();
+    setIsSaving(true);
+    onSave({
+      full_name: name.trim(),
+      birth_date: `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
+      room_id: room,
+      allergy_tags: allergens,
+      medical_notes: medicalNotes || undefined,
+    })
+      .then(() => resetForm())
+      .finally(() => setIsSaving(false));
   }
 
   if (!shouldRender) return null;
@@ -208,10 +192,10 @@ export default function AddChildModal({
           <button
             type="button"
             onClick={handleSave}
-            disabled={!isFormValid}
+            disabled={!isFormValid || isSaving}
             className="text-[15px] font-extrabold text-coral-dark disabled:text-[#C4B8AA] disabled:cursor-not-allowed transition-colors active:scale-[0.97] transition-transform duration-150"
           >
-            Guardar
+            {isSaving ? "Guardando…" : "Guardar"}
           </button>
         </div>
 
@@ -274,9 +258,9 @@ export default function AddChildModal({
                   <option value="" disabled>
                     Seleccionar sala
                   </option>
-                  {ROOMS.map((r) => (
-                    <option key={r} value={r}>
-                      {r}
+                  {rooms.map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.name}
                     </option>
                   ))}
                 </select>

@@ -1,3 +1,6 @@
+import { Child } from "@/app/_lib/child-types";
+import { DbChild } from "@/app/_lib/db-types";
+
 export const AVATAR_POOL = [
   { bg: "#A9D9E8", color: "#1F7A93" },
   { bg: "#F4B8CC", color: "#C44A7A" },
@@ -44,4 +47,45 @@ export function fechaHoy(): string {
   const today = new Date();
   const months = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
   return `${months[today.getMonth()]} ${today.getFullYear()}`;
+}
+
+export function mapDbChildToChild(
+  row: DbChild,
+  roomName: string,
+  index: number
+): Child {
+  const birth = new Date(row.birth_date);
+  const today = new Date();
+
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+
+  const months = [
+    "ene", "feb", "mar", "abr", "may", "jun",
+    "jul", "ago", "sep", "oct", "nov", "dic",
+  ];
+  const birthdateLabel = `${birth.getDate()} ${months[birth.getMonth()]} ${birth.getFullYear()}`;
+
+  const enrolled = new Date(row.enrolled_at);
+  const admissionLabel = `${months[enrolled.getMonth()]} ${enrolled.getFullYear()}`;
+
+  const avatar = AVATAR_POOL[index % AVATAR_POOL.length];
+
+  return {
+    id: row.id,
+    name: row.full_name,
+    initial: row.full_name[0].toUpperCase(),
+    avatarBg: avatar.bg,
+    avatarColor: avatar.color,
+    ageYears: age,
+    birthdateLabel,
+    room: roomName,
+    admissionLabel,
+    allergens: row.allergy_tags.map((t) => t.toUpperCase()),
+    allergyNotes: row.medical_notes ?? undefined,
+    linkedParents: [],
+  };
 }
