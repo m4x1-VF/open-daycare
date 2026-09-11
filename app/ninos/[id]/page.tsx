@@ -9,10 +9,23 @@ import ChildDetails from "@/app/_components/ninos/child-details";
 import ParentsSection from "@/app/_components/ninos/parents-section";
 import { createClient } from "@/utils/supabase/server";
 import { DbChild, DbInvitation } from "@/app/_lib/db-types";
-import { mapDbChildToChild } from "@/app/_lib/child-helpers";
+import { mapDbChildToChild, nextAvatarColor } from "@/app/_lib/child-helpers";
+import { LinkedParent } from "@/app/_lib/child-types";
+import { ROLE_LABELS } from "@/app/_lib/invite-helpers";
 
 interface NinosIdPageProps {
   params: Promise<{ id: string }>;
+}
+
+interface ParentChildJoinRow {
+  id: string;
+  relationship: "mom" | "dad" | "guardian";
+  users: { full_name: string; avatar_url: string | null } | null;
+}
+
+interface ChildDetailRow extends DbChild {
+  rooms: { name: string };
+  parent_children: ParentChildJoinRow[];
 }
 
 export default async function NinosIdPage({ params }: NinosIdPageProps) {
@@ -22,7 +35,9 @@ export default async function NinosIdPage({ params }: NinosIdPageProps) {
 
   const { data: childRow, error } = await supabase
     .from("children")
-    .select("*, rooms(id, name)")
+    .select(
+      "*, rooms(id, name), parent_children(id, relationship, users(full_name, avatar_url))"
+    )
     .eq("id", id)
     .single();
 
@@ -30,10 +45,27 @@ export default async function NinosIdPage({ params }: NinosIdPageProps) {
     notFound();
   }
 
-  const child = mapDbChildToChild(
-    childRow as DbChild,
-    (childRow as DbChild & { rooms: { name: string } }).rooms.name,
-    0
+  const childDetail = childRow as unknown as ChildDetailRow;
+
+  const child = mapDbChildToChild(childDetail, childDetail.rooms.name, 0);
+
+  child.linkedParents = childDetail.parent_children.map(
+    (link, index): LinkedParent => {
+      const parentName = link.users?.full_name ?? "";
+      const avatar = nextAvatarColor(index);
+      return {
+        id: link.id,
+        name: parentName,
+        email: "",
+        initial: parentName[0]?.toUpperCase() ?? "?",
+        avatarBg: avatar.bg,
+        avatarColor: avatar.color,
+        role: link.relationship,
+        roleLabel: ROLE_LABELS[link.relationship],
+        status: "active",
+        statusLabel: "ACTIVO",
+      };
+    }
   );
 
   const { data: pendingInvitations } = await supabase
