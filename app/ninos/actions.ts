@@ -69,6 +69,7 @@ export async function sendInvitation(input: SendInvitationInput) {
 
   const resend = new Resend(process.env.RESEND_API_KEY);
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (!appUrl) throw new Error("NEXT_PUBLIC_APP_URL is not configured");
   const roleLabel = ROLE_LABELS[input.relationship];
 
   try {

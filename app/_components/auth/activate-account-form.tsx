@@ -1,6 +1,43 @@
-import Link from "next/link";
+"use client";
 
-export function ActivateAccountForm() {
+import Link from "next/link";
+import { useState } from "react";
+
+import type { InvitationPreview } from "@/app/_lib/invite-helpers";
+import { acceptInvitation } from "@/app/(auth)/activar-cuenta/actions";
+
+const ERRORS: Record<string, string> = {
+  already_registered: "Ya tenés una cuenta en OpenDayCare.",
+  invalid_or_expired:
+    "El código de invitación no es válido o ya expiró. Verificá el link del email.",
+  sign_in_failed:
+    "Cuenta creada pero no pudimos iniciar sesión. Iniciá sesión desde la pantalla de login.",
+  unexpected: "No pudimos activar tu cuenta. Intentá de nuevo.",
+};
+
+export function ActivateAccountForm({ preview }: { preview: InvitationPreview }) {
+  const [password, setPassword] = useState("");
+  const [photoConsent, setPhotoConsent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+
+    const { error: actionError } = await acceptInvitation(
+      preview.code,
+      password,
+      photoConsent
+    );
+
+    if (actionError) {
+      setError(ERRORS[actionError] ?? actionError);
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <div className="w-full max-w-[440px]">
       <div className="w-[58px] h-[58px] rounded-[18px] bg-gradient-to-br from-[#F8C3A8] to-auth-brand-mid flex items-center justify-center mb-[22px] shadow-[0_12px_26px_-10px_rgba(238,129,100,0.65)]">
@@ -28,72 +65,102 @@ export function ActivateAccountForm() {
 
       <div className="flex items-center gap-3.5 bg-white border-[1.5px] border-auth-input-border rounded-2xl py-3.5 px-4 mb-[22px]">
         <div className="w-11 h-11 rounded-full bg-auth-invite-bg text-auth-invite-text font-fredoka font-semibold text-[19px] flex items-center justify-center">
-          M
+          {preview.avatar_initial}
         </div>
         <div>
           <div className="text-[13px] text-auth-muted">Te invitaron a seguir a</div>
           <div className="font-fredoka font-semibold text-[17px] text-text">
-            Mateo · Sala Soles
+            {preview.child_name} · Sala {preview.room_name}
           </div>
         </div>
       </div>
 
-      <div className="text-[12px] font-bold tracking-[0.7px] text-auth-muted mb-2">
-        CÓDIGO DE INVITACIÓN
-      </div>
-      <input
-        type="text"
-        value="7K4P9"
-        readOnly
-        className="w-full py-3.5 px-4 rounded-[14px] border-[1.5px] border-auth-input-border bg-white text-[18px] tracking-[3px] font-bold text-auth-input-text mb-[18px] font-fredoka"
-      />
+      <form onSubmit={handleSubmit}>
+        <div className="text-[12px] font-bold tracking-[0.7px] text-auth-muted mb-2">
+          CÓDIGO DE INVITACIÓN
+        </div>
+        <input
+          type="text"
+          value={preview.code}
+          readOnly
+          className="w-full py-3.5 px-4 rounded-[14px] border-[1.5px] border-auth-input-border bg-white text-[18px] tracking-[3px] font-bold text-auth-input-text mb-[18px] font-fredoka"
+        />
 
-      <div className="text-[12px] font-bold tracking-[0.7px] text-auth-muted mb-2">
-        EMAIL
-      </div>
-      <input
-        type="email"
-        value="lucia.fernandez@gmail.com"
-        readOnly
-        className="w-full py-3.5 px-4 rounded-[14px] border-[1.5px] border-auth-input-border bg-white text-[15px] text-auth-input-text mb-[18px]"
-      />
+        <div className="text-[12px] font-bold tracking-[0.7px] text-auth-muted mb-2">
+          EMAIL
+        </div>
+        <input
+          type="email"
+          value={preview.email}
+          readOnly
+          className="w-full py-3.5 px-4 rounded-[14px] border-[1.5px] border-auth-input-border bg-white text-[15px] text-auth-input-text mb-[18px]"
+        />
 
-      <div className="text-[12px] font-bold tracking-[0.7px] text-auth-muted mb-2">
-        CREAR CONTRASEÑA
-      </div>
-      <input
-        type="password"
-        value="contraseña"
-        readOnly
-        className="w-full py-3.5 px-4 rounded-[14px] border-[1.5px] border-[#F2A78E] bg-white text-[15px] text-auth-input-text mb-[18px]"
-      />
+        <div className="text-[12px] font-bold tracking-[0.7px] text-auth-muted mb-2">
+          CREAR CONTRASEÑA
+        </div>
+        <input
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          className="w-full py-3.5 px-4 rounded-[14px] border-[1.5px] border-[#F2A78E] bg-white text-[15px] text-auth-input-text mb-[18px]"
+        />
 
-      <label className="flex items-start gap-3 bg-auth-consent-bg rounded-[14px] py-3.5 px-4 mb-6">
-        <span className="flex-none w-6 h-6 rounded-[8px] bg-auth-consent-check flex items-center justify-center mt-0.5">
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#fff"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        <label className="flex items-start gap-3 bg-auth-consent-bg rounded-[14px] py-3.5 px-4 mb-6 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={photoConsent}
+            onChange={(event) => setPhotoConsent(event.target.checked)}
+            className="sr-only"
+          />
+          <span
+            className={`flex-none w-6 h-6 rounded-[8px] flex items-center justify-center mt-0.5 ${
+              photoConsent
+                ? "bg-auth-consent-check"
+                : "bg-white border-[1.5px] border-auth-input-border"
+            }`}
           >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        </span>
-        <span className="text-[14px] text-auth-consent-text leading-[1.45]">
-          Autorizo a la guardería a tomar y compartir fotos de mi hijo dentro de la app.
-        </span>
-      </label>
+            {photoConsent && (
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            )}
+          </span>
+          <span className="text-[14px] text-auth-consent-text leading-[1.45]">
+            Autorizo a la guardería a tomar y compartir fotos de mi hijo dentro de la app.
+          </span>
+        </label>
 
-      <Link
-        href="#"
-        className="block text-center w-full py-[15px] rounded-[15px] bg-gradient-to-b from-auth-btn-start to-auth-btn-end text-white font-extrabold text-[16px] shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)]"
-      >
-        Activar mi cuenta
-      </Link>
+        {error && (
+          error === ERRORS.already_registered ? (
+            <p className="mb-4 text-[14px] text-red-600 text-center">
+              {error}{" "}
+              <Link href="/login" className="text-auth-link font-extrabold">
+                Iniciar sesión
+              </Link>
+            </p>
+          ) : (
+            <p className="mb-4 text-[14px] text-red-600 text-center">{error}</p>
+          )
+        )}
+
+        <button
+          type="submit"
+          disabled={!password || !photoConsent || isSubmitting}
+          className="block text-center w-full py-[15px] rounded-[15px] bg-gradient-to-b from-auth-btn-start to-auth-btn-end text-white font-extrabold text-[16px] shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? "Activando…" : "Activar mi cuenta"}
+        </button>
+      </form>
 
       <p className="text-center mt-[22px] text-auth-muted text-[14.5px]">
         ¿Ya tenés cuenta?{" "}
