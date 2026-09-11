@@ -1,11 +1,15 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 import Sidebar from "@/app/_components/feed/sidebar";
 import TopBar from "@/app/_components/feed/top-bar";
 import ChildProfileHeader from "@/app/_components/ninos/child-profile-header";
 import AllergiesCard from "@/app/_components/ninos/allergies-card";
 import ChildDetails from "@/app/_components/ninos/child-details";
 import ParentsSection from "@/app/_components/ninos/parents-section";
-import { getChildById } from "@/app/_lib/mock-children";
+import { createClient } from "@/utils/supabase/server";
+import { DbChild } from "@/app/_lib/db-types";
+import { mapDbChildToChild } from "@/app/_lib/child-helpers";
 
 interface NinosIdPageProps {
   params: Promise<{ id: string }>;
@@ -13,23 +17,24 @@ interface NinosIdPageProps {
 
 export default async function NinosIdPage({ params }: NinosIdPageProps) {
   const { id } = await params;
-  const child = getChildById(id);
 
-  if (!child) {
-    return (
-      <div className="flex min-h-screen bg-cream">
-        <div className="hidden md:block">
-          <Sidebar activeItem="ninos" />
-        </div>
-        <div className="flex-1 flex flex-col min-w-0">
-          <TopBar />
-          <main className="flex-1 min-w-0 flex items-center justify-center">
-            <p className="text-text-muted text-[15px]">Niño no encontrado</p>
-          </main>
-        </div>
-      </div>
-    );
+  const supabase = await createClient(await cookies());
+
+  const { data: childRow, error } = await supabase
+    .from("children")
+    .select("*, rooms(id, name)")
+    .eq("id", id)
+    .single();
+
+  if (error || !childRow) {
+    notFound();
   }
+
+  const child = mapDbChildToChild(
+    childRow as DbChild,
+    (childRow as DbChild & { rooms: { name: string } }).rooms.name,
+    0
+  );
 
   return (
     <div className="flex min-h-screen bg-cream">
