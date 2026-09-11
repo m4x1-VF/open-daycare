@@ -8,7 +8,7 @@ import AllergiesCard from "@/app/_components/ninos/allergies-card";
 import ChildDetails from "@/app/_components/ninos/child-details";
 import ParentsSection from "@/app/_components/ninos/parents-section";
 import { createClient } from "@/utils/supabase/server";
-import { DbChild } from "@/app/_lib/db-types";
+import { DbChild, DbInvitation } from "@/app/_lib/db-types";
 import { mapDbChildToChild } from "@/app/_lib/child-helpers";
 
 interface NinosIdPageProps {
@@ -35,6 +35,12 @@ export default async function NinosIdPage({ params }: NinosIdPageProps) {
     (childRow as DbChild & { rooms: { name: string } }).rooms.name,
     0
   );
+
+  const { data: pendingInvitations } = await supabase
+    .from("invitations")
+    .select("*")
+    .eq("child_id", child.id)
+    .eq("status", "pending");
 
   return (
     <div className="flex min-h-screen bg-cream">
@@ -105,7 +111,11 @@ export default async function NinosIdPage({ params }: NinosIdPageProps) {
                   Resumen del día
                 </a>
 
-                <ParentsSection child={child} />
+                <ParentsSection
+                  child={child}
+                  childId={child.id}
+                  initialPendingInvitations={(pendingInvitations ?? []) as DbInvitation[]}
+                />
               </div>
             </div>
           </div>

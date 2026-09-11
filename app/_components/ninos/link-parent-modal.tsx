@@ -1,14 +1,20 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { LinkedParent } from "@/app/_lib/child-types";
-import { ROLES, ROLE_LABELS, generateInviteCode } from "@/app/_lib/invite-helpers";
-import { AVATAR_POOL } from "@/app/_lib/child-helpers";
+import { ROLES } from "@/app/_lib/invite-helpers";
+
+interface SendInvitationData {
+  child_id: string;
+  full_name: string;
+  email: string;
+  relationship: "mom" | "dad" | "guardian";
+}
 
 interface LinkParentModalProps {
   open: boolean;
   onClose: () => void;
-  onSave: (parent: LinkedParent) => void;
+  onSave: (data: SendInvitationData) => Promise<void>;
+  childId: string;
   childName: string;
   existingEmails: string[];
 }
@@ -24,17 +30,21 @@ export default function LinkParentModal({
   open,
   onClose,
   onSave,
+  childId,
   childName,
   existingEmails,
 }: LinkParentModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
-  const [inviteCode, setInviteCode] = useState("");
 
   const [touchedName, setTouchedName] = useState(false);
   const [touchedEmail, setTouchedEmail] = useState(false);
   const [touchedRole, setTouchedRole] = useState(false);
+
+  const [isSending, setIsSending] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [sendError, setSendError] = useState("");
 
   const [dataState, setDataState] = useState<"open" | "closing">();
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -74,25 +84,23 @@ export default function LinkParentModal({
     setName("");
     setEmail("");
     setRole("");
-    setInviteCode("");
     setTouchedName(false);
     setTouchedEmail(false);
     setTouchedRole(false);
+    setSuccessMessage("");
+    setSendError("");
   }
 
   const handleClose = useCallback(() => {
+    if (isSending) return;
     resetForm();
     onClose();
-  }, [onClose]);
+  }, [isSending, onClose]);
 
   useEffect(() => {
     if (open) {
-      const code = generateInviteCode();
       requestAnimationFrame(() => {
-        setInviteCode(code);
-        requestAnimationFrame(() => {
-          setDataState("open");
-        });
+        setDataState("open");
       });
       const focusTimer = setTimeout(() => {
         nameInputRef.current?.focus();
@@ -122,31 +130,36 @@ export default function LinkParentModal({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [dataState, handleClose]);
 
-  function handleSave() {
+  async function handleSave() {
     setTouchedName(true);
     setTouchedEmail(true);
     setTouchedRole(true);
 
-    if (!isFormValid) return;
+    if (!isFormValid || isSending) return;
 
-    const trimmedName = name.trim();
-    const poolIndex = existingEmails.length % AVATAR_POOL.length;
+    setIsSending(true);
+    setSendError("");
 
-    const newParent: LinkedParent = {
-      id: crypto.randomUUID(),
-      name: trimmedName,
-      email: email.trim().toLowerCase(),
-      initial: trimmedName[0].toUpperCase(),
-      avatarBg: AVATAR_POOL[poolIndex].bg,
-      avatarColor: AVATAR_POOL[poolIndex].color,
-      role: role as "mom" | "dad" | "guardian",
-      roleLabel: ROLE_LABELS[role],
-      status: "pending",
-      statusLabel: "PENDIENTE",
-    };
-
-    onSave(newParent);
-    resetForm();
+    try {
+      await onSave({
+        child_id: childId,
+        full_name: name.trim(),
+        email: email.trim(),
+        relationship: role as "mom" | "dad" | "guardian",
+      });
+      setSuccessMessage(`Invitación enviada a ${email.trim()}`);
+      setTimeout(() => {
+        handleClose();
+      }, 2000);
+    } catch (error) {
+      setSendError(
+        error instanceof Error
+          ? error.message
+          : "No se pudo enviar la invitación. Intentá de nuevo."
+      );
+    } finally {
+      setIsSending(false);
+    }
   }
 
   if (!shouldRender) return null;
@@ -284,38 +297,85 @@ export default function LinkParentModal({
             </div>
           )}
 
-          <div className="bg-[#FBF1D6] border-[1.5px] border-dashed border-invite-border rounded-[16px] p-[18px] text-center mb-5">
-            <div className="text-[12px] font-extrabold tracking-[.7px] text-invite-label mb-2">
-              CÓDIGO DE INVITACIÓN
+          {successMessage && (
+            <div className="flex items-center gap-[11px] bg-[#E3F1E4] rounded-[14px] p-[13px] pr-4 mb-5">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#3E8A4E"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="flex-none"
+              >
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+              <span className="text-[13.5px] text-[#2E6B3C] font-extrabold leading-[1.45]">
+                {successMessage}
+              </span>
             </div>
-            <div className="font-fredoka font-semibold text-[34px] tracking-[7px] text-[#8A7234]">
-              {inviteCode}
+          )}
+
+          {sendError && (
+            <div className="flex items-center gap-[11px] bg-red-50 rounded-[14px] p-[13px] pr-4 mb-5">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#DC2626"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="flex-none"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4" />
+                <path d="M12 16h.01" />
+              </svg>
+              <span className="text-[13.5px] text-red-600 leading-[1.45]">
+                {sendError}
+              </span>
             </div>
-            <div className="text-[13px] text-invite-label mt-[6px]">
-              Vence en 7 días
-            </div>
-          </div>
+          )}
 
           <button
             type="button"
             onClick={handleSave}
-            disabled={!isFormValid}
+            disabled={!isFormValid || isSending || !!successMessage}
             className="flex items-center justify-center gap-[9px] w-full py-[14px] rounded-[14px] bg-gradient-to-b from-[#F4977E] to-[#EE8164] text-white font-extrabold text-[15.5px] shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)] disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97] transition-transform duration-150"
           >
-            <svg
-              width="19"
-              height="19"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#fff"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="m22 2-7 20-4-9-9-4z" />
-              <path d="M22 2 11 13" />
-            </svg>
-            Enviar invitación
+            {isSending ? (
+              <svg
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                className="animate-spin"
+              >
+                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              </svg>
+            ) : (
+              <svg
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m22 2-7 20-4-9-9-4z" />
+                <path d="M22 2 11 13" />
+              </svg>
+            )}
+            {isSending ? "Enviando..." : "Enviar invitación"}
           </button>
         </div>
       </div>

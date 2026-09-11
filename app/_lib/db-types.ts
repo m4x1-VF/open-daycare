@@ -19,3 +19,17 @@ export interface DbChild {
   created_at: string;
   updated_at: string;
 }
+
+export interface DbInvitation {
+  id: string;
+  child_id: string;
+  invited_by: string;
+  full_name: string;
+  email: string;
+  relationship: "mom" | "dad" | "guardian";
+  code: string;
+  status: "pending" | "accepted" | "expired" | "cancelled";
+  expires_at: string;
+  accepted_at: string | null;
+  created_at: string;
+}
