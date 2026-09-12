@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# open-daycare
 
-## Getting Started
+Next.js 16 (App Router) + Supabase application for daycare/family communication.
 
-First, run the development server:
+## Requirements
+
+- Node.js 20+
+- npm
+- Supabase CLI (`npm i -g supabase` or see [docs](https://supabase.com/docs/guides/local-development/cli/getting-started))
+
+## Getting started
+
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Configure environment variables (see `.env.template` for the full list):
+
+   ```bash
+   cp .env.template .env.local
+   ```
+
+   Required for the app to run:
+
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=https://dkwzoobnaaxxpovxxgvt.supabase.co
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+   ```
+
+   Optional (used by specific integrations): `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `NEXT_PUBLIC_APP_URL`, `SUPABASE_DB_PASSWORD`.
+
+   Actual values are shared within the team — never commit a real `.env`.
+
+3. Run the dev server:
+
+   ```bash
+   npm run dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000).
+
+## Available scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Dev server at http://localhost:3000 |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | ESLint (the only check script) |
+| `npx tsc --noEmit` | Typecheck (no dedicated script) |
+## Supabase agent skills
+
+Install the official Supabase agent skills locally so AI agents get critical development and security guidance:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx skills add supabase/agent-skills
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Supabase CLI — authentication
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The project connects to a shared remote Supabase project (`project_ref=dkwzoobnaaxxpovxxgvt`). To use the CLI against it (linking, migrations, DB push, etc.) every team member must follow these steps:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Authenticate the opencode MCP server:
 
-## Learn More
+   ```bash
+   opencode mcp auth supabase
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+   This authenticates the Supabase MCP server configured in `opencode.json` (project `dkwzoobnaaxxpovxxgvt`) so AI agents can inspect the DB and apply migrations.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Log in with your Supabase account:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   supabase login
+   ```
 
-## Deploy on Vercel
+   This opens the browser to authenticate. Alternatively use a personal access token (generated at https://supabase.com/dashboard/account/tokens):
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   supabase login --token sbp_...
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Link the local project to the remote one:
+
+   ```bash
+   supabase link --project-ref dkwzoobnaaxxpovxxgvt
+   ```
+
+   It will ask for the database password when needed.
+
+4. Verify it's linked:
+
+   ```bash
+   supabase projects list
+   supabase --help
+   ```
+
+Note: the MCP Supabase server (`opencode.json`) already targets this `project_ref`, so AI agents can apply migrations without local CLI auth — but the migration SQL must always be written to `supabase/migrations/`.
+
+## Database migrations
+
+Every schema change must produce a migration file:
+
+- File naming: `supabase/migrations/YYYYMMDDHHMMSS_name.sql`
+- Each file reflects the **final state** (fold later `ALTER`s into the original `CREATE`)
+- A clean database must be rebuildable from the folder alone
+
+Schema source of truth: `opendaycare-database-schema.md` in the `07-DB-Schema` project references.
