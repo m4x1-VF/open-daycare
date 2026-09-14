@@ -29,6 +29,7 @@ export default function CreatePostModal({
 
   const [dataState, setDataState] = useState<"open" | "closing">();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const shouldRender = open || dataState === "closing";
 
   useEffect(() => {
@@ -56,34 +57,57 @@ export default function CreatePostModal({
   }, [onClose]);
 
   useEffect(() => {
-    if (open) {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setDataState("open");
-        });
-      });
-      const focusTimer = setTimeout(() => {
-        textareaRef.current?.focus();
-      }, 50);
-      return () => clearTimeout(focusTimer);
-    } else if (dataState === "open") {
-      queueMicrotask(() => setDataState("closing"));
-    }
-  }, [open, dataState]);
+    if (!open) return;
+
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setDataState("open"));
+    });
+    const focusTimer = setTimeout(() => {
+      textareaRef.current?.focus();
+    }, 50);
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      clearTimeout(focusTimer);
+    };
+  }, [open]);
 
   useEffect(() => {
+    if (!open && dataState === "open") {
+      queueMicrotask(() => setDataState("closing"));
+    }
     if (dataState === "closing") {
       const timer = setTimeout(() => {
         setDataState(undefined);
       }, 150);
       return () => clearTimeout(timer);
     }
-  }, [dataState]);
+  }, [open, dataState]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape" && dataState === "open") {
+      if (dataState !== "open") return;
+      if (e.key === "Escape") {
         handleClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+      const focusable = dialog.querySelectorAll<HTMLElement>(
+        'button:not(:disabled), [href], input:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || !dialog.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (active === last || !dialog.contains(active))) {
+        e.preventDefault();
+        first.focus();
       }
     }
     document.addEventListener("keydown", handleKeyDown);
@@ -178,6 +202,10 @@ export default function CreatePostModal({
         onClick={handleClose}
       />
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-post-modal-title"
         className="modal-card relative w-full max-w-[580px] bg-[#FBF4EC] border border-border rounded-[24px] shadow-[0_20px_50px_-24px_rgba(63,54,46,0.35)] overflow-hidden"
         data-state={dataState}
       >
@@ -189,7 +217,10 @@ export default function CreatePostModal({
           >
             Cancelar
           </button>
-          <span className="font-fredoka font-semibold text-[18px] text-text">
+          <span
+            id="create-post-modal-title"
+            className="font-fredoka font-semibold text-[18px] text-text"
+          >
             Nueva publicación
           </span>
           <button
@@ -281,6 +312,7 @@ export default function CreatePostModal({
             ref={textareaRef}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            aria-label="Descripción"
             placeholder="Contá cómo le fue hoy…"
             className="modal-input w-full min-h-[120px] resize-y py-[14px] px-4 rounded-[14px] border-[1.5px] border-[#EADFD0] bg-white text-[15px] text-text placeholder:text-[#B6A99B] leading-normal mb-[22px] transition-colors duration-200 focus:outline-none focus:border-coral-dark focus:ring-2 focus:ring-coral-light/20 focus:ring-offset-0"
           />

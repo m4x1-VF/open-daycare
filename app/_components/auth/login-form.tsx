@@ -1,16 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 
 import { signIn } from "@/app/(auth)/login/actions";
 
 export function LoginForm() {
   const [state, formAction, isPending] = useActionState(signIn, { error: null });
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const canSubmit = email.trim() !== "" && password !== "" && !isPending;
 
   return (
     <div className="w-full max-w-[392px]">
@@ -29,8 +25,6 @@ export function LoginForm() {
           name="email"
           type="email"
           autoComplete="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
           className="w-full py-3.5 px-4 rounded-[14px] border-[1.5px] border-auth-input-border bg-white text-[15px] text-auth-input-text mb-[18px]"
         />
 
@@ -42,8 +36,6 @@ export function LoginForm() {
           type="password"
           autoComplete="current-password"
           placeholder="••••••••"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
           className="w-full py-3.5 px-4 rounded-[14px] border-[1.5px] border-auth-input-border bg-white text-[15px] text-auth-input-text mb-2.5"
         />
 
@@ -58,7 +50,7 @@ export function LoginForm() {
 
         <button
           type="submit"
-          disabled={!canSubmit}
+          disabled={isPending}
           className="block text-center w-full py-[15px] rounded-[15px] bg-gradient-to-b from-auth-btn-start to-auth-btn-end text-white font-extrabold text-[16px] shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)] disabled:opacity-60 disabled:cursor-not-allowed"
         >
           Iniciar sesión
